@@ -248,10 +248,10 @@ CONFLICT_CLAUSE can be one of:
   replace
 ```
 
-### `foreign-key`
+### `foreign-key-clause`
 
 ```bash
-Usage: yas-qwin --foreign-key FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]
+Usage: yas-qwin --foreign-key-clause FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]
 Options:
   -e, --on-delete VALUE
   -u, --on-update VALUE
