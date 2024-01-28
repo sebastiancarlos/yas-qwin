@@ -175,6 +175,27 @@ VALUE can be one of:
   "set default"/"default
 ```
 
+## Advanced Example
+
+Roll over your sleeves Jesse, we need to cook!
+
+```bash
+#! /usr/bin/env bash
+
+colId="$(yas-qwin --column-def id INTEGER --primary-key)";
+colName="$(yas-qwin --column-def name TEXT --not-null)";
+fk="$(yas-qwin --foreign-key-clause paper_sizes NAME --deferred --on-delete cascade --on-update cascade)";
+colPage="$(yas-qwin --column-def paper_size TEXT --foreign-key "${fk}")";
+yas-qwin --create-table document "$colId, $colName, $colPage";
+```
+
+Output:
+
+```sql
+-- Create table
+CREATE TABLE document (id INTEGER PRIMARY KEY NOT NULL, name TEXT NOT NULL, paper_size TEXT REFERENCES paper_sizes (NAME) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED) STRICT
+```
+
 ## Known Limitations
 
 YAS-QWIN comes with some quirks:
