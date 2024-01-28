@@ -23,9 +23,10 @@ Check these fabulous features:
 - **Serve on-the-fly or save for later:** Execute commands directly against
   your database, or just print them out to learn, admire and play with.
 
-**Alpha Disclaimer:** Currenty, YAS-QWIN has limited selection and lacks
-data manipulation. Only DDL (creating and modifying the database schema) is
-fully supported. Check bottom for the list of missing features.
+**Alpha Disclaimer:** Currenty, YAS-QWIN has limited support for selection
+queries, and lacks data manipulation queries. Only DDL (creating and modifying
+the database schema) queries are fully supported. Check the bottom of the
+README for the full list of missing features.
 
 ## Installation ✨
 
@@ -36,6 +37,12 @@ Grab your favorite shell and get going:
 3. **Find out what it can do for you**: `./yas-qwin --list-commands`
 
 Customize your PATH to taste, and you're ready to engage in some serious query action!
+
+**Note:**
+- The `yas-qwin` is a python file without the `.py` extension (this is to call
+  it easily without needing to create a shell alias).
+- The development team recommends aliasing it anyway to something short like
+  `q` for even faster SQL generation during interactive use.
 
 ## Usage
 
