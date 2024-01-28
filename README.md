@@ -110,8 +110,7 @@ YAS-QWIN's commands shall lead the faithful:
 Every one of YAS-QWIN's commands comes with its own help message. Just type
 `--help` after the command to get a detailed explanation of its usage.
 
-But because you are busy, you don't have time for that, so here are the
-commands' help messages:
+But because you are busy, here they are:
 
 ### `list-tables` 
 ```
