@@ -98,7 +98,7 @@ all the motherloving help outputs:
 ### `create-table`
 
 ```bash
-Usage: q -c create-table [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]
+Usage: yas-qwin -c create-table [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]
 Options:
   -t, --temporary
   -i, --if-not-exists
@@ -111,7 +111,7 @@ SQLite only options:
 ### `column-def`
 
 ```bash
-Usage: q -c column-def COLUMN_NAME TYPE [OPTIONS]
+Usage: yas-qwin -c column-def COLUMN_NAME TYPE [OPTIONS]
 Options:
   -p, --primary-key [CONFLICT-CLAUSE]
   -a, --autoincrement
@@ -128,7 +128,7 @@ Options:
 ### `table-constr`
 
 ```bash
-Usage: q -c table-constr [COLUMN_NAMES] [OPTIONS]
+Usage: yas-qwin -c table-constr [COLUMN_NAMES] [OPTIONS]
 Options:
   -p, --primary-key [CONFLICT_CLAUSE]
   -u, --unique [CONFLICT_CLAUSE]
@@ -149,7 +149,7 @@ CONFLICT_CLAUSE can be one of:
 ### `foreign-key`
 
 ```bash
-Usage: q -c foreign-key FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]
+Usage: yas-qwin -c foreign-key FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]
 Options:
   -e, --on-delete VALUE
   -u, --on-update VALUE
