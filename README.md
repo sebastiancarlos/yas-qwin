@@ -26,8 +26,11 @@ SELECT * FROM your_table_name;
 - **Database agnostic (ish):** Currently it runs queries only in SQLite;
   fancier databases to be seduced later. But its raw SQL output can be used in
   **any database** (unless using options labeled "SQLite only", of course)
-- **Damn intuitive:** If you speak UNIX CLI, you and YAS-QWIN have a lot to
+- **CLI Interface:** If you speak UNIX CLI, you and YAS-QWIN have a lot to
   talk about. It's as if Dennis Ritchie whispered SQL in your ear.
+- **SQL Refresher:** If you run the commands without arguments, it
+  will print out the SQL query with placeholders. This is ideal for learning
+  SQL or refreshing your memory.
 
 **Alpha Disclaimer:** Currenty, YAS-QWIN has limited support for selection
 queries, and lacks data manipulation queries. Only DDL (creating and modifying
@@ -42,7 +45,7 @@ Grab your favorite shell and get going:
 2. `cd yas-qwin`
 3. `./yas-qwin`
 
-Optionally add to your `PATH`.
+Optionally add to your `PATH`. (This can be done by running `make install`)
 
 **Note:**
 - `yas-qwin` is a python file without the `.py` extension (this is to call
