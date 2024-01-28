@@ -15,8 +15,9 @@ Check these fabulous features:
 - **Single-file beauty:** No complex installations, just a Python-powered CLI
   bad boi.
 - **Command palette ecstasy:** Pop some commands and a fall in love with SQL.
-- **Database agnostic (ish):** Currently playing nice with SQLite; fancier
-  databases to be seduced later.
+- **Database agnostic (ish):** Currently it runs queries only in SQLite;
+  fancier databases to be seduced later. But its raw SQL output can be used in
+  **any database** (unless using options labeled "SQLite only", of course)
 - **Damn intuitive:** If you speak UNIX CLI, you and YAS-QWIN have a lot to
   talk about. It's as if Dennis Ritchie whispered SQL in your ear.
 - **Serve on-the-fly or save for later:** Execute commands directly against
