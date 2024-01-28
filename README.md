@@ -1,13 +1,13 @@
 # YAS-QWIN (Yet Another SQL-Query Writing Interface)
 
 Welcome to the wild world of
-**[YAS-QWIN](https://github.com/sebastiancarlos/yas-qwin)**, your zippy
-sidekick for crafting SQL queries with swagger.
+**[YAS-QWIN](https://github.com/sebastiancarlos/yas-qwin)**, your
+sidekick for crafting SQL.
 
 ## Features 🌈
 
 YAS-QWIN is the remarkably lightweight, command-line interface that gives you
-some raw SQL to your prequel (that being your arguments and options). And hold
+some raw SQL to your _prequel_ (that being your arguments and options). And hold
 up, if you daily-drive SQLite, we run the query for you, homie!
 
 Check these fabulous features:
