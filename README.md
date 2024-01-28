@@ -56,15 +56,25 @@ Optionally add to your `PATH`.
 Usage: yas-qwin [OPTIONS] [COMMAND OPTIONS AND ARGS]
 
 Two ways of passing commands are supported:
-  1. Using -c/--command COMMAND
+  1. Using -c/--command COMMAND 
   2. Using --COMMAND
 
+Commands:
+  list-tables	drop-column
+  list-indexes	create-index
+  print-schemas	drop-index
+  print-table	reindex
+  rename-table	create-table
+  rename-column	column-def
+  add-column	table-constr
+  drop-column	foreign-key-clause
+
 Options:
-  -l, --list-commands
+  -l, --list-commands    One per line
   -r, --run              Run it in your SQLite db
   -d, --database         Database file to use
   -c, --command          Command to run
-  -h, --help             You know what dis do
+  -h, --help             Run with any command
 ```
 
 Or run it in your database.
