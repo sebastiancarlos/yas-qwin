@@ -64,11 +64,12 @@ NON_RUNNABLE_COMMANDS = [
 # HANDLE TOP-LEVEL ARGUMENTS #
 ##############################
 
-parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS,
-                                 allow_abbrev=False)
+parser = argparse.ArgumentParser(
+    add_help=False, usage=argparse.SUPPRESS, allow_abbrev=False
+)
 
 # catch all positional arguments
-parser.add_argument("positionals", nargs='*')
+parser.add_argument("positionals", nargs="*")
 parser.add_argument("-r", "--run", action="store_true", default=False)
 parser.add_argument("-d", "--database")
 parser.add_argument("-c", "--command", choices=COMMANDS)
@@ -85,7 +86,7 @@ args, unparsed = parser.parse_known_intermixed_args()
 # for -l/--list, just print available commands and exit
 if args.list_commands:
     for command in COMMANDS:
-        print(f'{command}')
+        print(f"{command}")
     sys.exit(0)
 
 # unpack arguments
@@ -97,7 +98,7 @@ run = args.run
 # if any of the long-option commands were passed, it becomes the TRUE command.
 # All bow down
 for cmd in COMMANDS:
-    lowdash_command = cmd.replace('-', '_')
+    lowdash_command = cmd.replace("-", "_")
     if getattr(args, lowdash_command):
         command = cmd
         break
@@ -107,58 +108,60 @@ for cmd in COMMANDS:
 # to preserve original order.
 # TODO: Figure out a cleaner way to do this, as it surely exists.
 unordered_positionals = args.positionals + unparsed
-positionals = list(filter(
-    lambda arg: arg in unordered_positionals,
-    sys.argv
-))
+positionals = list(filter(lambda arg: arg in unordered_positionals, sys.argv))
 
 # print top level help if no command was passed
 if command is None:
     # generate a list of commands in two columns:
     #   COMMAND\tCOMMAND\n
-    list_of_commands = ''
+    list_of_commands = ""
     mid = len(COMMANDS) // 2
     for i in range(mid + 1):
         if i + mid < len(COMMANDS):
-            list_of_commands += f'  {COMMANDS[i]}\t{COMMANDS[i+mid]}\n'
+            list_of_commands += f"  {COMMANDS[i]}\t{COMMANDS[i+mid]}\n"
         else:
-            list_of_commands += f'  {COMMANDS[i]}\n'
+            list_of_commands += f"  {COMMANDS[i]}\n"
 
-    print('Usage: yas-qwin [OPTIONS] [COMMAND OPTIONS AND ARGS]')
-    print('')
-    print('Two ways of passing commands are supported:')
-    print('  1. Using -c/--command COMMAND ')
-    print('  2. Using --COMMAND')
-    print('')
-    print('Commands:')
+    print("Usage: yas-qwin [OPTIONS] [COMMAND OPTIONS AND ARGS]")
+    print("")
+    print("Two ways of passing commands are supported:")
+    print("  1. Using -c/--command COMMAND ")
+    print("  2. Using --COMMAND")
+    print("")
+    print("Commands:")
     print(list_of_commands)
-    print('Options:')
-    print('  -l, --list-commands    One per line')
-    print('  -r, --run              Run it in your SQLite db')
-    print('  -d, --database         Database file to use')
-    print('  -c, --command          Command to run')
-    print('  -h, --help             Run with any command')
+    print("Options:")
+    print("  -l, --list-commands    One per line")
+    print("  -r, --run              Run it in your SQLite db")
+    print("  -d, --database         Database file to use")
+    print("  -c, --command          Command to run")
+    print("  -h, --help             Run with any command")
     sys.exit(0)
 
 #####################
-# UTILITY FUNCTIONS # 
+# UTILITY FUNCTIONS #
 #####################
 
 conn = None
+
+
 def get_database_connection():
     global conn
     if conn is not None:
-        return 
+        return
 
     if DATABASE_TYPE == "sqlite":
         import sqlite3
+
         conn = sqlite3.connect(database)
+
 
 def close_database_connection():
     global conn
     if conn is not None:
         if DATABASE_TYPE == "sqlite":
             conn.close()
+
 
 # try to find a database file in current directory if none specified
 if database is None:
@@ -167,6 +170,7 @@ if database is None:
         db_files = glob.glob("*.db")
         if len(db_files) == 1:
             database = db_files[0]
+
 
 def fetch_table_names():
     if DATABASE_TYPE == "sqlite":
@@ -177,11 +181,12 @@ def fetch_table_names():
         tables = [table[0] for table in tables]
         return tables
 
+
 ################
 # SQL BUILDING #
 ################
 
-sql = ''
+sql = ""
 
 # some commands look better on a particular SQLite mode, so they set this
 custom_mode = None
@@ -189,68 +194,65 @@ custom_mode = None
 if command == COMMAND_LIST_TABLES:
     if DATABASE_TYPE == "sqlite":
         if help:
-            print('Usage: yas-qwin --list-tables')
-            print('')
-            print('- List names of all tables in database')
-            print('- Note: SQLite only')
+            print("Usage: yas-qwin --list-tables")
+            print("")
+            print("- List names of all tables in database")
+            print("- Note: SQLite only")
             sys.exit(0)
 
-        custom_mode = 'list';
-
+        custom_mode = "list"
         sql = "-- List tables in database\n"
         sql += "SELECT name FROM sqlite_schema WHERE type='table';"
 if command == COMMAND_LIST_INDEXES:
     if DATABASE_TYPE == "sqlite":
         if help:
-            print('Usage: yas-qwin --list-indexes')
-            print('')
-            print('- List names of all indexes in database')
-            print('- Note: SQLite only')
+            print("Usage: yas-qwin --list-indexes")
+            print("")
+            print("- List names of all indexes in database")
+            print("- Note: SQLite only")
             sys.exit(0)
 
-        custom_mode = 'list';
-
+        custom_mode = "list"
         sql = "-- List indexes in database\n"
         sql += "SELECT name FROM sqlite_schema WHERE type='index';"
 elif command == COMMAND_PRINT_SCHEMAS:
     if DATABASE_TYPE == "sqlite":
         if help:
-            print('Usage: yas-qwin --print-schemas')
-            print('')
-            print('- Print schema of all tables and indexes in database')
-            print('- Note: SQLite only')
+            print("Usage: yas-qwin --print-schemas")
+            print("")
+            print("- Print schema of all tables and indexes in database")
+            print("- Note: SQLite only")
             sys.exit(0)
 
-        custom_mode = 'list';
-
-        sql =  "-- Print schema of all tables and indexes in database\n" 
+        custom_mode = "list"
+        sql = "-- Print schema of all tables and indexes in database\n"
         sql += "SELECT sql FROM sqlite_schema;"
 elif command == COMMAND_PRINT_TABLE:
     if help:
-        print('Usage: yas-qwin --print-table [TABLES]')
-        print('')
-        print('- Print contents of tables')
-        print('- Note: If no TABLES passed and an SQLite database is in range,')
-        print('        fetch all tables and print them all')
+        print("Usage: yas-qwin --print-table [TABLES]")
+        print("")
+        print("- Print contents of tables")
+        print("- Note: If no TABLES passed and an SQLite database is in range,")
+        print("        fetch all tables and print them all")
         sys.exit(0)
 
     # get arguments
-    if len(positionals) > 0: 
+    if len(positionals) > 0:
         tables = positionals
     elif database:
         tables = fetch_table_names()
     else:
-        tables = ['sample-table'] 
+        tables = ["sample-table"]
 
     # generate SQL query for each table
     sql = "-- Print contents of tables\n"
-    sql += '\n'.join([f'SELECT * FROM {table};' for table in tables])
-elif command == COMMAND_RENAME_TABLE:   
+    sql += "\n".join([f"SELECT * FROM {table};" for table in tables])
+elif command == COMMAND_RENAME_TABLE:
     # if --help was passed, print usage and exit
     if help:
-        print('Usage: yas-qwin --rename-table [TABLE] [NEW NAME]')
-        print('')
-        print('- Rename a table')
+        print("Usage: yas-qwin --rename-table [TABLE] [NEW NAME]")
+        print("")
+        print("- Rename a table")
         sys.exit(0)
 
     # this command expects a single table, so error if not the case
@@ -258,16 +260,16 @@ elif command == COMMAND_RENAME_TABLE:
         alter_table = positionals[0]
         new_name = positionals[1]
     else:
-        alter_table = 'old_table'
-        new_name = 'new_table'
+        alter_table = "old_table"
+        new_name = "new_table"
 
     sql = "-- Rename table\n"
-    sql += f'ALTER TABLE {alter_table} RENAME TO {new_name};'
+    sql += f"ALTER TABLE {alter_table} RENAME TO {new_name};"
 elif command == COMMAND_RENAME_COLUMN:
     if help:
-        print('Usage: yas-qwin --rename-column [TABLE] [COLUMN] [NEW NAME]')
-        print('')
-        print('- Rename a column')
+        print("Usage: yas-qwin --rename-column [TABLE] [COLUMN] [NEW NAME]")
+        print("")
+        print("- Rename a column")
         sys.exit(0)
 
     # expects a table, a column name, and a new column name
@@ -276,20 +278,20 @@ elif command == COMMAND_RENAME_COLUMN:
         column = positionals[1]
         new_name = positionals[2]
     else:
-        table = 'sample_table'
-        column = 'old_column'
-        new_name = 'new_column'
-    
+        table = "sample_table"
+        column = "old_column"
+        new_name = "new_column"
+
     sql = "-- Rename column in table\n"
-    sql += f'ALTER TABLE {table} RENAME COLUMN {column} TO {new_name};'
+    sql += f"ALTER TABLE {table} RENAME COLUMN {column} TO {new_name};"
 elif command == COMMAND_ADD_COLUMN:
     print("Error: Not implemented yet, AYY LMAO")
     sys.exit(1)
 elif command == COMMAND_DROP_COLUMN:
     if help:
-        print('Usage: yas-qwin --drop-column [TABLE] [COLUMN]')
-        print('')
-        print('- Drop a column')
+        print("Usage: yas-qwin --drop-column [TABLE] [COLUMN]")
+        print("")
+        print("- Drop a column")
         sys.exit(0)
 
     # expects a table and a column name
@@ -297,22 +299,24 @@ elif command == COMMAND_DROP_COLUMN:
         table = positionals[0]
         column = positionals[1]
     else:
-        table = 'sample_table'
-        column = 'sample_column'
+        table = "sample_table"
+        column = "sample_column"
 
     sql = "-- Drop column from table\n"
-    sql += f'ALTER TABLE {table} DROP COLUMN {column};'
+    sql += f"ALTER TABLE {table} DROP COLUMN {column};"
 elif command == COMMAND_CREATE_INDEX:
     if help:
-        print('Usage: yas-qwin --create-index [INDEX-NAME] [TABLE] [INDEXED-COLUMNS] [OPTIONS]')
-        print('')
-        print('- Create an index on a column')
-        print('- INDEXED-COLUMNS is a comma-separated list of columns')
-        print('')
-        print('Options:')
-        print('  -u/--unique: Create a unique index')
-        print('  -w/--where EXPR: Create a partial index')
-        print('  -i/--if-not-exists: Do not error if index already exists')
+        print(
+            "Usage: yas-qwin --create-index [INDEX-NAME] [TABLE] [INDEXED-COLUMNS] [OPTIONS]"
+        )
+        print("")
+        print("- Create an index on a column")
+        print("- INDEXED-COLUMNS is a comma-separated list of columns")
+        print("")
+        print("Options:")
+        print("  -u/--unique: Create a unique index")
+        print("  -w/--where EXPR: Create a partial index")
+        print("  -i/--if-not-exists: Do not error if index already exists")
         sys.exit(0)
 
     # pass the remaining positional arguments to a new parser
@@ -321,7 +325,7 @@ elif command == COMMAND_CREATE_INDEX:
     parser.add_argument("-u", "--unique", action="store_true")
     parser.add_argument("-w", "--where", nargs=1)
     parser.add_argument("-i", "--if-not-exists", action="store_true")
-    parser.add_argument("positionals", nargs='*')
+    parser.add_argument("positionals", nargs="*")
 
     # parse arguments
     args = parser.parse_args(positionals)
@@ -338,37 +342,37 @@ elif command == COMMAND_CREATE_INDEX:
         table = positionals[1]
         columns = positionals[2]
     else:
-        index = 'sample_index'
-        table = 'sample_table'
-        columns = 'sample_column'
+        index = "sample_index"
+        table = "sample_table"
+        columns = "sample_column"
 
     sql = "-- Create index\n"
     sql += f'CREATE {"UNIQUE " if unique else ""}'
     sql += f'INDEX {"IF NOT EXISTS " if if_not_exists else ""}'
-    sql += f'{index} ON {table} ({columns})'
+    sql += f"{index} ON {table} ({columns})"
     if where:
-        sql += f' WHERE {where[0]}'
+        sql += f" WHERE {where[0]}"
 
-    sql += ';'
+    sql += ";"
 elif command == COMMAND_DROP_INDEX:
     if help:
-        print('Usage: yas-qwin --drop-index [INDEX-NAME] [OPTIONS]')
-        print('')
-        print('- Drop an index')
-        print('')
-        print('Options:')
-        print('  -i/--if-exists: Do not error if index does not exist')
+        print("Usage: yas-qwin --drop-index [INDEX-NAME] [OPTIONS]")
+        print("")
+        print("- Drop an index")
+        print("")
+        print("Options:")
+        print("  -i/--if-exists: Do not error if index does not exist")
         sys.exit(0)
 
     # pass the remaining positional arguments to a new parser
     # to extract flags
     parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
     parser.add_argument("-i", "--if-exists", action="store_true")
-    parser.add_argument("positionals", nargs='*')
+    parser.add_argument("positionals", nargs="*")
 
     # parse arguments
     args = parser.parse_args(positionals)
-    
+
     # unpack options
     if_exists = args.if_exists
     positionals = args.positionals
@@ -376,16 +380,16 @@ elif command == COMMAND_DROP_INDEX:
     if len(positionals) == 1:
         index = positionals[0]
     else:
-        index = 'sample_index'
+        index = "sample_index"
 
     sql = "-- Drop index\n"
     sql += f'DROP INDEX {"IF EXISTS " if if_exists else ""}{index};'
 elif command == COMMAND_REINDEX:
     if help:
-        print('Usage: yas-qwin --reindex [INDEX-NAME]')
-        print('')
-        print('- Reindex a table')
-        print('- If no index is specified, reindex all tables')
+        print("Usage: yas-qwin --reindex [INDEX-NAME]")
+        print("")
+        print("- Reindex a table")
+        print("- If no index is specified, reindex all tables")
         sys.exit(0)
 
     # expect either one argument or none.
@@ -396,13 +400,15 @@ elif command == COMMAND_REINDEX:
 
     sql = "-- Reindex\n"
     if index is None:
-        sql += 'REINDEX;'
+        sql += "REINDEX;"
     else:
-        sql += f'REINDEX {index};'
+        sql += f"REINDEX {index};"
 elif command == COMMAND_CREATE_TABLE:
     # if --help was passed, print usage and exit
     if help:
-        print(f'Usage: yas-qwin --{command} [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]')
+        print(
+            f"Usage: yas-qwin --{command} [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]"
+        )
         print("Options:")
         print("  -t, --temporary")
         print("  -i, --if-not-exists")
@@ -418,14 +424,14 @@ elif command == COMMAND_CREATE_TABLE:
     parser.add_argument("-m", "--temporary", action="store_true")
     parser.add_argument("-i", "--if-not-exists", action="store_true")
     parser.add_argument("-a", "--as-select", nargs=1)
-    parser.add_argument("positionals", nargs='*')
+    parser.add_argument("positionals", nargs="*")
     if DATABASE_TYPE == "sqlite":
         parser.add_argument("-s", "--strict", action="store_false", default=True)
         parser.add_argument("-w", "--without-rowid", action="store_true")
 
     # parse arguments
     args = parser.parse_args(positionals)
-    
+
     # unpack options
     temporary = args.temporary
     if_not_exists = args.if_not_exists
@@ -437,71 +443,71 @@ elif command == COMMAND_CREATE_TABLE:
     table_constraints = None
     if as_select and len(positionals) == 1:
         table = positionals[0]
-        columns = ''
+        columns = ""
     elif len(positionals) >= 2:
         table = positionals[0]
         columns = positionals[1]
         if len(positionals) == 3:
             table_constraints = positionals[2]
     else:
-        table = 'sample_table'
-        columns = 'sample_columns'
-        table_constraints = 'sample_table_constraints'
+        table = "sample_table"
+        columns = "sample_columns"
+        table_constraints = "sample_table_constraints"
 
     sql = "-- Create table\n"
     sql += f'CREATE {"TEMPORARY " if temporary else ""}'
     sql += f'TABLE {"IF NOT EXISTS " if if_not_exists else ""}'
-    sql += f'{table} '
+    sql += f"{table} "
     if as_select:
-        sql += f'AS {as_select[0]}'
+        sql += f"AS {as_select[0]}"
     else:
         # join together columns and table constraints
         if table_constraints:
-            parethesis_statement = columns + ', ' + table_constraints
+            parethesis_statement = columns + ", " + table_constraints
         else:
             parethesis_statement = columns
 
-        sql += f'({parethesis_statement})'
+        sql += f"({parethesis_statement})"
         if DATABASE_TYPE == "sqlite":
             if strict and without_rowid:
-                sql += ' WITHOUT ROWID, STRICT'
+                sql += " WITHOUT ROWID, STRICT"
             elif strict:
-                sql += ' STRICT'
+                sql += " STRICT"
             elif without_rowid:
-                sql += ' WITHOUT ROWID'
-    sql += ';'
+                sql += " WITHOUT ROWID"
+    sql += ";"
 elif command == COMMAND_COLUMN_DEFINITION:
     # if --help was passed, print command usage and exit
     if help:
-        print(f'Usage: yas-qwin --{command} COLUMN_NAME TYPE [OPTIONS]')
-        print('Options:')
-        print('  -p, --primary-key [CONFLICT-CLAUSE]')
-        print('  -a, --autoincrement')
-        print('  -d, --descending')
-        print('  -n, --not-null [CONFLICT-CLAUSE]')
-        print('  -u, --unique [CONFLICT-CLAUSE]')
-        print('  -k, --check VALUE')
-        print('  -d, --default VALUE')
-        print('  -f, --foreign-key FOREIGN_KEY')
-        print('  -g, --generated-as VALUE')
-        print('  -s, --stored')
+        print(f"Usage: yas-qwin --{command} COLUMN_NAME TYPE [OPTIONS]")
+        print("Options:")
+        print("  -p, --primary-key [CONFLICT-CLAUSE]")
+        print("  -a, --autoincrement")
+        print("  -d, --descending")
+        print("  -n, --not-null [CONFLICT-CLAUSE]")
+        print("  -u, --unique [CONFLICT-CLAUSE]")
+        print("  -k, --check VALUE")
+        print("  -d, --default VALUE")
+        print("  -f, --foreign-key FOREIGN_KEY")
+        print("  -g, --generated-as VALUE")
+        print("  -s, --stored")
         exit(0)
 
     # pass the remaining positional arguments to a new parser
     # to extract flags
     parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
-    parser.add_argument("-p", "--primary-key", nargs='?', const=True, default=False)
+    parser.add_argument("-p", "--primary-key", nargs="?", const=True, default=False)
     parser.add_argument("-a", "--autoincrement", action="store_true")
     parser.add_argument("-d", "--descending", action="store_true")
-    parser.add_argument("-n", "--not-null", nargs='?', const=True, default=False)
-    parser.add_argument("-u", "--unique", nargs='?', const=True, default=False)
+    parser.add_argument("-n", "--not-null", nargs="?", const=True, default=False)
+    parser.add_argument("-u", "--unique", nargs="?", const=True, default=False)
     parser.add_argument("-k", "--check", nargs=1)
     parser.add_argument("-e", "--default", nargs=1)
     parser.add_argument("-l", "--collate", nargs=1)
     parser.add_argument("-f", "--foreign-key", nargs=1)
     parser.add_argument("-g", "--generated-as", nargs=1)
     parser.add_argument("-s", "--stored", action="store_true")
-    parser.add_argument("positionals", nargs='*')
+    parser.add_argument("positionals", nargs="*")
 
     # parse arguments
     args = parser.parse_args(positionals)
@@ -526,8 +532,8 @@ elif command == COMMAND_COLUMN_DEFINITION:
         column_name = args.positionals[0]
         column_type = args.positionals[1]
     else:
-        column_name = 'sample_column'
-        column_type = 'sample_type'
+        column_name = "sample_column"
+        column_type = "sample_type"
 
     if DATABASE_TYPE == "sqlite":
         if is_primary_key:
@@ -537,38 +543,37 @@ elif command == COMMAND_COLUMN_DEFINITION:
 
         # Conflict clauses are a sqlite only feature, so we process them here.
         # Convert the clause keys to the sqlite equivalent
-        CONFLICT_CLAUSE_VALUES = ["rollback", "abort", "fail", "ignore",
-                                  "replace"] 
-        for clause_key in ['primary_key_clause', 'not_null_clause', 'unique_clause']:
+        CONFLICT_CLAUSE_VALUES = ["rollback", "abort", "fail", "ignore", "replace"]
+        for clause_key in ["primary_key_clause", "not_null_clause", "unique_clause"]:
             if locals()[clause_key] in CONFLICT_CLAUSE_VALUES:
                 upper = locals()[clause_key].upper()
-                locals()[clause_key] = f'ON CONFLICT {upper}'
+                locals()[clause_key] = f"ON CONFLICT {upper}"
 
-    sql = f'{column_name} {column_type} '
+    sql = f"{column_name} {column_type} "
     if is_primary_key:
-        sql += 'PRIMARY KEY '
+        sql += "PRIMARY KEY "
         if descending:
-            sql += 'DESC '
+            sql += "DESC "
         if primary_key_clause:
-            sql += f'{primary_key_clause} '
+            sql += f"{primary_key_clause} "
         if autoincrement:
-            sql += 'AUTOINCREMENT '
+            sql += "AUTOINCREMENT "
     if is_not_null:
-        sql += 'NOT NULL '
+        sql += "NOT NULL "
         if not_null_clause:
-            sql += f'{not_null_clause} '
+            sql += f"{not_null_clause} "
     if is_unique:
-        sql += 'UNIQUE '
+        sql += "UNIQUE "
         if unique_clause:
-            sql += f'{unique_clause} '
+            sql += f"{unique_clause} "
     if check:
-        sql += f'CHECK ({check[0]}) '
+        sql += f"CHECK ({check[0]}) "
     if default:
-        sql += f'DEFAULT {default[0]} '
+        sql += f"DEFAULT {default[0]} "
     if collate:
-        sql += f'COLLATE {collate[0]} '
+        sql += f"COLLATE {collate[0]} "
     if foreign_key:
-        sql += f'{foreign_key[0]} '
+        sql += f"{foreign_key[0]} "
 
     # remove trailing whitespace, if any
     sql = sql.rstrip()
@@ -576,15 +581,17 @@ elif command == COMMAND_COLUMN_DEFINITION:
 elif command == COMMAND_FOREIGN_KEY:
     # if --help was passed, print command usage and exit
     if help:
-        print(f'Usage: yas-qwin --foreign-key-clause FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]')
-        print('Options:')
-        print('  -e, --on-delete VALUE')
-        print('  -u, --on-update VALUE')
-        print('  -f, --deferred')
-        print('')
-        print('VALUE can be one of:')
-        print('  cascade')
-        print('  restrict')
+        print(
+            f"Usage: yas-qwin --foreign-key-clause FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]"
+        )
+        print("Options:")
+        print("  -e, --on-delete VALUE")
+        print("  -u, --on-update VALUE")
+        print("  -f, --deferred")
+        print("")
+        print("VALUE can be one of:")
+        print("  cascade")
+        print("  restrict")
         print('  "set null"/"null"')
         print('  "set default"/"default"')
         exit(0)
@@ -595,11 +602,11 @@ elif command == COMMAND_FOREIGN_KEY:
     parser.add_argument("-e", "--on-delete", nargs=1)
     parser.add_argument("-u", "--on-update", nargs=1)
     parser.add_argument("-f", "--deferred", action="store_true")
-    parser.add_argument("positionals", nargs='*')
+    parser.add_argument("positionals", nargs="*")
 
     # parse arguments
     args = parser.parse_args(positionals)
-    
+
     # unpack options
     on_delete = args.on_delete
     on_update = args.on_update
@@ -611,63 +618,63 @@ elif command == COMMAND_FOREIGN_KEY:
         foreign_table_name = args.positionals[0]
         foreign_column_names = args.positionals[1]
     else:
-        foreign_table_name = 'foreign_table_name'
-        foreign_column_names = 'foreign_column_names'
+        foreign_table_name = "foreign_table_name"
+        foreign_column_names = "foreign_column_names"
 
     # map delete/update values
     DELETE_UPDATE_VALUES = {
-       'set null': 'SET NULL',
-       'null': 'SET NULL',
-       'set default': 'SET DEFAULT',
-       'default': 'SET DEFAULT',
-       'cascade': 'CASCADE',
-       'restrict': 'RESTRICT',
+        "set null": "SET NULL",
+        "null": "SET NULL",
+        "set default": "SET DEFAULT",
+        "default": "SET DEFAULT",
+        "cascade": "CASCADE",
+        "restrict": "RESTRICT",
     }
     if on_delete:
         on_delete = DELETE_UPDATE_VALUES[on_delete[0]]
     if on_update:
         on_update = DELETE_UPDATE_VALUES[on_update[0]]
 
-    sql = f'REFERENCES {foreign_table_name} '
+    sql = f"REFERENCES {foreign_table_name} "
     if foreign_column_names:
-        sql += f'({foreign_column_names}) '
+        sql += f"({foreign_column_names}) "
     if on_delete:
-        sql += f'ON DELETE {on_delete} '
+        sql += f"ON DELETE {on_delete} "
     if on_update:
-        sql += f'ON UPDATE {on_update} '
+        sql += f"ON UPDATE {on_update} "
     if deferred:
-        sql += 'DEFERRABLE INITIALLY DEFERRED'
+        sql += "DEFERRABLE INITIALLY DEFERRED"
     # remove trailing spaces, if any
     sql = sql.rstrip()
 elif command == COMMAND_TABLE_CONSTRAINT:
     # if --help was passed, print command usage and exit
     if help:
-        print(f'Usage: yas-qwin --table-constr [COLUMN_NAMES] [OPTIONS]')
-        print('Options:')
-        print('  -p, --primary-key [CONFLICT_CLAUSE]')
-        print('  -u, --unique [CONFLICT_CLAUSE]')
-        print('  -k, --check VALUE')
-        print('  -f, --foreign-key FOREIGN_KEY_CLAUSE')
-        print('')
-        print('Note: COLUMN_NAMES are needed for PRIMARY KEY, UNIQUE, or')
-        print('      FOREIGN KEY constraints.')
-        print('')
-        print('CONFLICT_CLAUSE can be one of:')
-        print('  rollback')
-        print('  abort')
-        print('  fail')
-        print('  ignore')
-        print('  replace')
+        print(f"Usage: yas-qwin --table-constr [COLUMN_NAMES] [OPTIONS]")
+        print("Options:")
+        print("  -p, --primary-key [CONFLICT_CLAUSE]")
+        print("  -u, --unique [CONFLICT_CLAUSE]")
+        print("  -k, --check VALUE")
+        print("  -f, --foreign-key FOREIGN_KEY_CLAUSE")
+        print("")
+        print("Note: COLUMN_NAMES are needed for PRIMARY KEY, UNIQUE, or")
+        print("      FOREIGN KEY constraints.")
+        print("")
+        print("CONFLICT_CLAUSE can be one of:")
+        print("  rollback")
+        print("  abort")
+        print("  fail")
+        print("  ignore")
+        print("  replace")
         exit(0)
 
     # pass the remaining positional arguments to a new parser
     # to extract flags
     parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
-    parser.add_argument("-p", "--primary-key", nargs='?', const=True, default=False)
-    parser.add_argument("-u", "--unique", nargs='?', const=True, default=False)
+    parser.add_argument("-p", "--primary-key", nargs="?", const=True, default=False)
+    parser.add_argument("-u", "--unique", nargs="?", const=True, default=False)
     parser.add_argument("-k", "--check", nargs=1)
     parser.add_argument("-f", "--foreign-key", nargs=1)
-    parser.add_argument("positionals", nargs='*')
+    parser.add_argument("positionals", nargs="*")
 
     # parse arguments
     args = parser.parse_args(positionals)
@@ -682,41 +689,42 @@ elif command == COMMAND_TABLE_CONSTRAINT:
     if len(args.positionals) == 1:
         column_names = args.positionals[0]
     else:
-        column_names = 'column_names'
+        column_names = "column_names"
 
     # bail out on incompatible options
     if sum([is_primary_key, is_unique, check is not None, foreign_key is not None]) > 1:
-        print('Error: One of PRIMARY KEY, UNIQUE, CHECK, or FOREIGN KEY must be specified')
+        print(
+            "Error: One of PRIMARY KEY, UNIQUE, CHECK, or FOREIGN KEY must be specified"
+        )
         exit(1)
 
     if DATABASE_TYPE == "sqlite":
         # Conflict clauses are a sqlite only feature, so we process them here.
         # Convert the clause keys to the sqlite equivalent
-        CONFLICT_CLAUSE_VALUES = ["rollback", "abort", "fail", "ignore",
-                                  "replace"] 
-        for clause_key in ['primary_key_clause', 'unique_clause']:
+        CONFLICT_CLAUSE_VALUES = ["rollback", "abort", "fail", "ignore", "replace"]
+        for clause_key in ["primary_key_clause", "unique_clause"]:
             if locals()[clause_key] in CONFLICT_CLAUSE_VALUES:
                 upper = locals()[clause_key].upper()
-                locals()[clause_key] = f'ON CONFLICT {upper}'
+                locals()[clause_key] = f"ON CONFLICT {upper}"
 
     # build sql
     if is_primary_key:
-        sql = f'PRIMARY KEY ({column_names}) '
+        sql = f"PRIMARY KEY ({column_names}) "
         if primary_key_clause:
-            sql += f'{primary_key_clause}'
+            sql += f"{primary_key_clause}"
     elif is_unique:
-        sql = f'UNIQUE ({column_names}) '
+        sql = f"UNIQUE ({column_names}) "
         if unique_clause:
-            sql += f'{unique_clause}'
+            sql += f"{unique_clause}"
     elif check:
-        sql = f'CHECK ({check[0]})'
+        sql = f"CHECK ({check[0]})"
     elif foreign_key:
-        sql = f'FOREIGN KEY ({column_names}) {foreign_key[0]}'
+        sql = f"FOREIGN KEY ({column_names}) {foreign_key[0]}"
 
 # if --run, execute SQL query, else print it
 if run:
     if command in NON_RUNNABLE_COMMANDS:
-        print(f'{command} is not a full SQL statement, it cannot be run')
+        print(f"{command} is not a full SQL statement, it cannot be run")
         sys.exit(1)
 
     if database is None:
@@ -724,9 +732,9 @@ if run:
         sys.exit(1)
 
     if DATABASE_TYPE == "sqlite":
-        db_cli = 'sqlite3'
-        if custom_mode == 'list':
-          db_cli += ' -list'
+        db_cli = "sqlite3"
+        if custom_mode == "list":
+            db_cli += " -list"
 
         # pipe it to sqlite3, and then to a pager
         # Note: Using the library is faster. Consider that instead.
@@ -735,9 +743,10 @@ if run:
         # if command expects output, pipe it to less
         if command in COMMANDS_WITH_OUTPUT:
             less = "less --chop-long-lines --status-column --rscroll='>'"
-            pipe += f' | {less}'
+            pipe += f" | {less}"
 
         import subprocess
+
         subprocess.run(pipe, shell=True)
 else:
     print(sql)
