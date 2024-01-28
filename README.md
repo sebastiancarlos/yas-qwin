@@ -174,12 +174,6 @@ VALUE can be one of:
   "set default"/"default
 ```
 
-## Testing Grounds
-
-For those of you who tread cautiously, YAS-QWIN skips the database execution
-with a mere omission of `-r/--run`, printing the sacred scriptures (queries) to
-your terminal for you to judge.
-
 ## Known Limitations
 
 YAS-QWIN comes with some quirks:
@@ -187,7 +181,9 @@ YAS-QWIN comes with some quirks:
 - Not as diverse as could be yet. It do be a fierce CLI though.
 - Might toss an "AYY LMAO" at you, for that's its way of saying "Under
   construction."
-- Not all the SQL commands are supported. `SELECT`, `INSERT` and `UPDATE` are actually quite hard to implement. They are the main villains of the YAS-QWIN dev team, AYY LMAO.
+- Not all the SQL commands are supported. `SELECT`, `INSERT` and `UPDATE` are
+  actually quite hard to implement. They are the main villains of the YAS-QWIN
+  dev team, AYY LMAO.
 
 ## Disclaimer
 
