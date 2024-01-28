@@ -22,6 +22,10 @@ Check these fabulous features:
 - **Serve on-the-fly or save for later:** Execute commands directly against
   your database, or just print them out to learn, admire and play with.
 
+**Apha (male) disclaimer:** Currenty, YAS-QWIN has limited selection and lacks
+data manipulation. Only DDL (creating and modifying the database schema) is
+fully supported. Check bottom for the list of missing features.
+
 ## Installation ✨
 
 Grab your favorite shell and get going:
