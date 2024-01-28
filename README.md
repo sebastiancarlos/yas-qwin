@@ -269,7 +269,7 @@ VALUE can be one of:
 
 ## Advanced Example
 
-Roll up your sleeves Jesse, we need to cook!
+*"Roll up your sleeves Jesse, we need to cook!"*
 
 ```bash
 #! /usr/bin/env bash
