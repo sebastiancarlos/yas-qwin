@@ -105,7 +105,7 @@ YAS-QWIN's commands shall lead the faithful, AYY LMAO:
 Every one of YAS-QWIN's commands comes with its own help message. Just type
 `--help` after the command to get a detailed explanation of its usage.
 
-But because you are a busy sexy boi, you don't have time for that, so here are
+But because you are a busy boi, you don't have time for that, so here are
 all the motherloving help outputs:
 
 ### `create-table`
