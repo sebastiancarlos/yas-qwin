@@ -188,23 +188,52 @@ custom_mode = None
 
 if command == COMMAND_LIST_TABLES:
     if DATABASE_TYPE == "sqlite":
+        if help:
+            print('Usage: yas-qwin --list-tables')
+            print('')
+            print('- List names of all tables in database')
+            print('- Note: SQLite only')
+            sys.exit(0)
+
         custom_mode = 'list';
 
         sql = "-- List tables in database\n"
         sql += "SELECT name FROM sqlite_schema WHERE type='table';"
 if command == COMMAND_LIST_INDEXES:
     if DATABASE_TYPE == "sqlite":
+        if help:
+            print('Usage: yas-qwin --list-indexes')
+            print('')
+            print('- List names of all indexes in database')
+            print('- Note: SQLite only')
+            sys.exit(0)
+
         custom_mode = 'list';
 
         sql = "-- List indexes in database\n"
         sql += "SELECT name FROM sqlite_schema WHERE type='index';"
 elif command == COMMAND_PRINT_SCHEMAS:
     if DATABASE_TYPE == "sqlite":
+        if help:
+            print('Usage: yas-qwin --print-schemas')
+            print('')
+            print('- Print schema of all tables and indexes in database')
+            print('- Note: SQLite only')
+            sys.exit(0)
+
         custom_mode = 'list';
 
         sql =  "-- Print schema of all tables and indexes in database\n" 
         sql += "SELECT sql FROM sqlite_schema;"
 elif command == COMMAND_PRINT_TABLE:
+    if help:
+        print('Usage: yas-qwin --print-table [TABLES]')
+        print('')
+        print('- Print contents of tables')
+        print('- Note: If no TABLES passed and an SQLite database is in range,')
+        print('        fetch all tables and print them all')
+        sys.exit(0)
+
     # get arguments
     if len(positionals) > 0: 
         tables = positionals
@@ -216,7 +245,14 @@ elif command == COMMAND_PRINT_TABLE:
     # generate SQL query for each table
     sql = "-- Print contents of tables\n"
     sql += '\n'.join([f'SELECT * FROM {table};' for table in tables])
-elif command == COMMAND_RENAME_TABLE:
+elif command == COMMAND_RENAME_TABLE:   
+    # if --help was passed, print usage and exit
+    if help:
+        print('Usage: yas-qwin --rename-table [TABLE] [NEW NAME]')
+        print('')
+        print('- Rename a table')
+        sys.exit(0)
+
     # this command expects a single table, so error if not the case
     if len(positionals) == 2:
         alter_table = positionals[0]
@@ -228,6 +264,12 @@ elif command == COMMAND_RENAME_TABLE:
     sql = "-- Rename table\n"
     sql += f'ALTER TABLE {alter_table} RENAME TO {new_name};'
 elif command == COMMAND_RENAME_COLUMN:
+    if help:
+        print('Usage: yas-qwin --rename-column [TABLE] [COLUMN] [NEW NAME]')
+        print('')
+        print('- Rename a column')
+        sys.exit(0)
+
     # expects a table, a column name, and a new column name
     if len(positionals) == 3:
         table = positionals[0]
@@ -244,6 +286,12 @@ elif command == COMMAND_ADD_COLUMN:
     print("Error: Not implemented yet, AYY LMAO")
     sys.exit(1)
 elif command == COMMAND_DROP_COLUMN:
+    if help:
+        print('Usage: yas-qwin --drop-column [TABLE] [COLUMN]')
+        print('')
+        print('- Drop a column')
+        sys.exit(0)
+
     # expects a table and a column name
     if len(positionals) == 2:
         table = positionals[0]
@@ -255,9 +303,17 @@ elif command == COMMAND_DROP_COLUMN:
     sql = "-- Drop column from table\n"
     sql += f'ALTER TABLE {table} DROP COLUMN {column};'
 elif command == COMMAND_CREATE_INDEX:
-    # expects index-name, table-name, indexed-columns
-    # also accepts extra flag: -u/--unique
-    # also accepts extra flag: -w/--where EXPR
+    if help:
+        print('Usage: yas-qwin --create-index [INDEX-NAME] [TABLE] [INDEXED-COLUMNS] [OPTIONS]')
+        print('')
+        print('- Create an index on a column')
+        print('- INDEXED-COLUMNS is a comma-separated list of columns')
+        print('')
+        print('Options:')
+        print('  -u/--unique: Create a unique index')
+        print('  -w/--where EXPR: Create a partial index')
+        print('  -i/--if-not-exists: Do not error if index already exists')
+        sys.exit(0)
 
     # pass the remaining positional arguments to a new parser
     # to extract flags
@@ -295,9 +351,15 @@ elif command == COMMAND_CREATE_INDEX:
 
     sql += ';'
 elif command == COMMAND_DROP_INDEX:
-    # expects index-name
-    # also accepts extra flag: -i/--if-exists
-    
+    if help:
+        print('Usage: yas-qwin --drop-index [INDEX-NAME] [OPTIONS]')
+        print('')
+        print('- Drop an index')
+        print('')
+        print('Options:')
+        print('  -i/--if-exists: Do not error if index does not exist')
+        sys.exit(0)
+
     # pass the remaining positional arguments to a new parser
     # to extract flags
     parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
@@ -319,6 +381,13 @@ elif command == COMMAND_DROP_INDEX:
     sql = "-- Drop index\n"
     sql += f'DROP INDEX {"IF EXISTS " if if_exists else ""}{index};'
 elif command == COMMAND_REINDEX:
+    if help:
+        print('Usage: yas-qwin --reindex [INDEX-NAME]')
+        print('')
+        print('- Reindex a table')
+        print('- If no index is specified, reindex all tables')
+        sys.exit(0)
+
     # expect either one argument or none.
     if len(positionals) == 1:
         index = positionals[0]

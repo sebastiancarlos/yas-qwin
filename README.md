@@ -101,6 +101,92 @@ Every one of YAS-QWIN's commands comes with its own help message. Just type
 But because you are busy, you don't have time for that, so here are the
 commands' help messages:
 
+### `list-tables` 
+```
+Usage: yas-qwin --list-tables
+
+- List names of all tables in database
+- Note: SQLite only
+```
+
+### `list-indexes` 
+```
+Usage: yas-qwin --list-indexes
+
+- List names of all indexes in database
+- Note: SQLite only
+```
+
+### `print-schemas` 
+```
+Usage: yas-qwin --print-schemas
+
+- Print schema of all tables and indexes in database
+- Note: SQLite only
+```
+
+### `print-table` 
+```
+Usage: yas-qwin --print-table [TABLES]
+
+- Print contents of tables
+- Note: If no TABLES passed and an SQLite database is in range,
+        fetch all tables and print them all
+```
+
+### `rename-table` 
+```
+Usage: yas-qwin --rename-table [TABLE] [NEW NAME]
+
+- Rename a table
+```
+
+### `rename-column` 
+```
+Usage: yas-qwin --rename-column [TABLE] [COLUMN] [NEW NAME]
+
+- Rename a column
+Error: Not implemented yet, AYY LMAO
+```
+
+### `drop-column` 
+```
+Usage: yas-qwin --drop-column [TABLE] [COLUMN]
+
+- Drop a column
+```
+
+### `create-index` 
+```
+Usage: yas-qwin --create-index [INDEX-NAME] [TABLE] [INDEXED-COLUMNS] [OPTIONS]
+
+- Create an index on a column
+- INDEXED-COLUMNS is a comma-separated list of columns
+
+Options:
+  -u/--unique: Create a unique index
+  -w/--where EXPR: Create a partial index
+  -i/--if-not-exists: Do not error if index already exists
+```
+
+### `drop-index` 
+```
+Usage: yas-qwin --drop-index [INDEX-NAME] [OPTIONS]
+
+- Drop an index
+
+Options:
+  -i/--if-exists: Do not error if index does not exist
+```
+
+### `reindex` 
+```
+Usage: yas-qwin --reindex [INDEX-NAME]
+
+- Reindex a table
+- If no index is specified, reindex all tables
+```
+
 ### `create-table`
 
 ```bash
