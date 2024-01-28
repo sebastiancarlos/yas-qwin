@@ -1,4 +1,4 @@
-# YAS-QWIN (Yet Another SQL-Query Writing INterface)
+# YAS-QWIN (Yet Another SQL-Query Writing Interface)
 
 Welcome to the wild world of
 **[YAS-QWIN](https://github.com/sebastiancarlos/yas-qwin)**, your zippy
