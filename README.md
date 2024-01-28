@@ -4,7 +4,7 @@ Welcome to the wild world of
 **[YAS-QWIN](https://github.com/sebastiancarlos/yas-qwin)**, your zippy
 sidekick for crafting SQL queries with swagger.
 
-## Features
+## Features 🌈
 
 YAS-QWIN is the remarkably lightweight, command-line interface that gives you
 some raw SQL to your prequel (that being your arguments and options). And hold
@@ -22,7 +22,7 @@ Check these fabulous features:
 - **Serve on-the-fly or save for later:** Execute commands directly against
   your database, or just print them out to learn, admire and play with.
 
-## Installation
+## Installation ✨
 
 Grab your favorite shell and get going:
 
@@ -87,7 +87,7 @@ YAS-QWIN's commands shall lead the faithful, AYY LMAO:
 - ...plus many more to explore with `--list-commands`.
   - Not really... That's it.
 
-## I need somebody, help!
+## Help
 
 Every one of YAS-QWIN's commands comes with its own help message. Just type
 `--help` after the command to get a detailed explanation of its usage.
