@@ -157,7 +157,6 @@ Usage: yas-qwin --rename-table [TABLE] [NEW NAME]
 Usage: yas-qwin --rename-column [TABLE] [COLUMN] [NEW NAME]
 
 - Rename a column
-Error: Not implemented yet, AYY LMAO
 ```
 
 ### `drop-column` 
