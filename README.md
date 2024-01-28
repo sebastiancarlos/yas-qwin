@@ -14,7 +14,8 @@ Check these fabulous features:
 
 - **Single-file beauty:** No complex installations, just a Python-powered CLI
   bad boi.
-- **Command palette ecstasy:** Pop some commands and a fall in love with SQL.
+- **Command palette ecstasy:** Wide variety of stimulating commands to fall in
+  love with SQL.
 - **Database agnostic (ish):** Currently it runs queries only in SQLite;
   fancier databases to be seduced later. But its raw SQL output can be used in
   **any database** (unless using options labeled "SQLite only", of course)
