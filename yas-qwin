@@ -113,20 +113,31 @@ positionals = list(filter(
 ))
 
 # print top level help if no command was passed
-if command is None and help:
-    print('YAS-QWIN - Yet Another SQL-Query Writting INterface')
+if command is None:
+    # generate a list of commands in two columns:
+    #   COMMAND\tCOMMAND\n
+    list_of_commands = ''
+    mid = len(COMMANDS) // 2
+    for i in range(mid + 1):
+        if i + mid < len(COMMANDS):
+            list_of_commands += f'  {COMMANDS[i]}\t{COMMANDS[i+mid]}\n'
+        else:
+            list_of_commands += f'  {COMMANDS[i]}\n'
+
     print('Usage: yas-qwin [OPTIONS] [COMMAND OPTIONS AND ARGS]')
     print('')
     print('Two ways of passing commands are supported:')
     print('  1. Using -c/--command COMMAND ')
     print('  2. Using --COMMAND')
     print('')
+    print('Commands:')
+    print(list_of_commands)
     print('Options:')
-    print('  -l, --list-commands')
+    print('  -l, --list-commands    One per line')
     print('  -r, --run              Run it in your SQLite db')
     print('  -d, --database         Database file to use')
     print('  -c, --command          Command to run')
-    print('  -h, --help             You know what dis do')
+    print('  -h, --help             Run with any command')
     sys.exit(0)
 
 #####################

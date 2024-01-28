@@ -1,42 +1,46 @@
 # YAS-QWIN (Yet Another SQL-Query Writing Interface)
 
-Welcome to the wild world of
-**[YAS-QWIN](https://github.com/sebastiancarlos/yas-qwin)**, your
-sidekick for crafting SQL.
+**YAS-QWIN** is a CLI tool for building (and optionally running) SQL queries.
 
-## Features 🌈
+#### Example:
 
-YAS-QWIN is a command-line interface that gives you some raw SQL. And hold up,
-if you daily-drive SQLite, we run the query for you, homie!
+```bash
+yas-qwin --print-table your_table_name
+```
 
-Check these fabulous features:
+```sql
+-- Print contents of table
+SELECT * FROM your_table_name;
+```
 
-- **Single-file beauty:** No complex installations, just a Python-powered CLI
-  bad boi.
-- **Command palette ecstasy:** Wide variety of stimulating commands to fall in
-  love with SQL.
+## Features
+
+- **Single-file:** No complex installations, just a Python-powered CLI file
+  (not even a `.py` extension)
+- **Command palette:** Wide variety of commands. List them with `--help`.
+- **Run on-the-fly or save for later:** Execute commands directly against your
+  database by passing the `--run` flag. Or just print them out to learn or
+  use.
 - **Database agnostic (ish):** Currently it runs queries only in SQLite;
   fancier databases to be seduced later. But its raw SQL output can be used in
   **any database** (unless using options labeled "SQLite only", of course)
 - **Damn intuitive:** If you speak UNIX CLI, you and YAS-QWIN have a lot to
   talk about. It's as if Dennis Ritchie whispered SQL in your ear.
-- **Serve on-the-fly or save for later:** Execute commands directly against
-  your database, or just print them out to learn, admire and play with.
 
 **Alpha Disclaimer:** Currenty, YAS-QWIN has limited support for selection
 queries, and lacks data manipulation queries. Only DDL (creating and modifying
 the database schema) queries are fully supported. Check the bottom of the
 README for the full list of missing features.
 
-## Installation ✨
+## Installation
 
 Grab your favorite shell and get going:
 
-1. **Clone YAS-QWIN**: `git clone https://github.com/sebastiancarlos/yas-qwin`
-2. **Dive into the directory**: `cd yas-qwin`
-3. **Find out what it can do for you**: `./yas-qwin --list-commands`
+1. `git clone https://github.com/sebastiancarlos/yas-qwin`
+2. `cd yas-qwin`
+3. `./yas-qwin`
 
-Customize your PATH to taste, and you're ready to engage in some serious query action!
+Optionally add to your `PATH`.
 
 **Note:**
 - `yas-qwin` is a python file without the `.py` extension (this is to call
@@ -61,24 +65,16 @@ Options:
   -h, --help             You know what dis do
 ```
 
-Say you type this:
-
-`yas-qwin --print-table your_table_name`
-
-Out comes:
-
-```sql
--- Print contents of table
-SELECT * FROM your_table_name;
-```
-
-Or run it in your database, you hottie pipeliner you:
+Or run it in your database.
 
 `yas-qwin -d your_database.db -c print-indexes --run`
 
+**Note:** You don't need to pass a database file if there's a single `*.db`
+file in your current directory.
+
 ## Commandments
 
-YAS-QWIN's commands shall lead the faithful, AYY LMAO:
+YAS-QWIN's commands shall lead the faithful:
 
 - `list-tables`
 - `list-indexes`
@@ -96,16 +92,14 @@ YAS-QWIN's commands shall lead the faithful, AYY LMAO:
     - `column-def`
     - `table-constr`
     - `foreign-key-clause`
-- ...plus many more to explore with `--list-commands`.
-  - Not really... That's it.
 
 ## Help
 
 Every one of YAS-QWIN's commands comes with its own help message. Just type
 `--help` after the command to get a detailed explanation of its usage.
 
-But because you are a busy boi, you don't have time for that, so here are
-all the motherloving help outputs:
+But because you are busy, you don't have time for that, so here are the
+commands' help messages:
 
 ### `create-table`
 
@@ -203,9 +197,9 @@ CREATE TABLE document (
 
 YAS-QWIN comes with some quirks:
 
-- Not as diverse as could be yet. It do be a fierce CLI though.
-- Might toss an "AYY LMAO" at you, for that's its way of saying "Under
-  construction."
+- Not as database-engine diverse as could be yet.
+- Might toss an "AYY LMAO" or "Under construction" at you. It's a work in
+  progress, but it's getting there.
 - Not all the SQL commands are supported. `SELECT`, `INSERT` and `UPDATE` are
   actually quite hard to implement. They are the main villains of the YAS-QWIN
   dev team, AYY LMAO.
@@ -213,5 +207,8 @@ YAS-QWIN comes with some quirks:
 ## Disclaimer
 
 While the idea of writing SQL through a CLI is mostly silly, no one knew for
-sure until now. And while YAS-QWIN might be quirky, it stands as a half-serious
-way of learning and automating your SQL.
+sure until now. And while YAS-QWIN might be quirky, it stands as a
+half-serious way of learning and automating your SQL.
+
+If you want a fully feature SQL builder today, check out
+[SQLGlot](https://github.com/tobymao/sqlglot].
