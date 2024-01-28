@@ -200,7 +200,7 @@ Usage: yas-qwin --reindex [INDEX-NAME]
 ### `create-table`
 
 ```bash
-Usage: yas-qwin -c create-table [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]
+Usage: yas-qwin --create-table [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]
 Options:
   -t, --temporary
   -i, --if-not-exists
@@ -213,7 +213,7 @@ SQLite only options:
 ### `column-def`
 
 ```bash
-Usage: yas-qwin -c column-def COLUMN_NAME TYPE [OPTIONS]
+Usage: yas-qwin --column-def COLUMN_NAME TYPE [OPTIONS]
 Options:
   -p, --primary-key [CONFLICT-CLAUSE]
   -a, --autoincrement
@@ -230,7 +230,7 @@ Options:
 ### `table-constr`
 
 ```bash
-Usage: yas-qwin -c table-constr [COLUMN_NAMES] [OPTIONS]
+Usage: yas-qwin --table-constr [COLUMN_NAMES] [OPTIONS]
 Options:
   -p, --primary-key [CONFLICT_CLAUSE]
   -u, --unique [CONFLICT_CLAUSE]
@@ -251,7 +251,7 @@ CONFLICT_CLAUSE can be one of:
 ### `foreign-key`
 
 ```bash
-Usage: yas-qwin -c foreign-key FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]
+Usage: yas-qwin --foreign-key FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]
 Options:
   -e, --on-delete VALUE
   -u, --on-update VALUE
@@ -307,4 +307,4 @@ sure until now. And while YAS-QWIN might be quirky, it stands as a
 half-serious way of learning and automating your SQL.
 
 If you want a fully feature SQL builder today, check out
-[SQLGlot](https://github.com/tobymao/sqlglot].
+[SQLGlot](https://github.com/tobymao/sqlglot).

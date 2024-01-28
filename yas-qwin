@@ -402,7 +402,7 @@ elif command == COMMAND_REINDEX:
 elif command == COMMAND_CREATE_TABLE:
     # if --help was passed, print usage and exit
     if help:
-        print(f'Usage: q -c {command} [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]')
+        print(f'Usage: yas-qwin --{command} [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]')
         print("Options:")
         print("  -t, --temporary")
         print("  -i, --if-not-exists")
@@ -473,7 +473,7 @@ elif command == COMMAND_CREATE_TABLE:
 elif command == COMMAND_COLUMN_DEFINITION:
     # if --help was passed, print command usage and exit
     if help:
-        print(f'Usage: q -c {command} COLUMN_NAME TYPE [OPTIONS]')
+        print(f'Usage: yas-qwin --{command} COLUMN_NAME TYPE [OPTIONS]')
         print('Options:')
         print('  -p, --primary-key [CONFLICT-CLAUSE]')
         print('  -a, --autoincrement')
@@ -576,7 +576,7 @@ elif command == COMMAND_COLUMN_DEFINITION:
 elif command == COMMAND_FOREIGN_KEY:
     # if --help was passed, print command usage and exit
     if help:
-        print(f'Usage: q -c foreign-key FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]')
+        print(f'Usage: yas-qwin --foreign-key-clause FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]')
         print('Options:')
         print('  -e, --on-delete VALUE')
         print('  -u, --on-update VALUE')
@@ -642,7 +642,7 @@ elif command == COMMAND_FOREIGN_KEY:
 elif command == COMMAND_TABLE_CONSTRAINT:
     # if --help was passed, print command usage and exit
     if help:
-        print(f'Usage: q -c table-constr [COLUMN_NAMES] [OPTIONS]')
+        print(f'Usage: yas-qwin --table-constr [COLUMN_NAMES] [OPTIONS]')
         print('Options:')
         print('  -p, --primary-key [CONFLICT_CLAUSE]')
         print('  -u, --unique [CONFLICT_CLAUSE]')
