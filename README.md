@@ -299,6 +299,7 @@ YAS-QWIN comes with some quirks:
 - Not all the SQL commands are supported. `SELECT`, `INSERT` and `UPDATE` are
   actually quite hard to implement. They are the main villains of the YAS-QWIN
   dev team, AYY LMAO.
+- Inputs are not sanitized. Do not use with untrusted input.
 
 ## Disclaimer
 
