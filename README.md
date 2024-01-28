@@ -39,7 +39,7 @@ Grab your favorite shell and get going:
 Customize your PATH to taste, and you're ready to engage in some serious query action!
 
 **Note:**
-- The `yas-qwin` is a python file without the `.py` extension (this is to call
+- `yas-qwin` is a python file without the `.py` extension (this is to call
   it easily without needing to create a shell alias).
 - The development team recommends aliasing it anyway to something short like
   `q` for even faster SQL generation during interactive use.
