@@ -8,6 +8,8 @@
 yas-qwin --print-table your_table_name
 ```
 
+#### Output: 
+
 ```sql
 -- Print contents of table
 SELECT * FROM your_table_name;
