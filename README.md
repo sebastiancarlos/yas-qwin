@@ -6,9 +6,8 @@ sidekick for crafting SQL.
 
 ## Features 🌈
 
-YAS-QWIN is the remarkably lightweight, command-line interface that gives you
-some raw SQL to your _prequel_ (that being your arguments and options). And hold
-up, if you daily-drive SQLite, we run the query for you, homie!
+YAS-QWIN is a command-line interface that gives you some raw SQL. And hold up,
+if you daily-drive SQLite, we run the query for you, homie!
 
 Check these fabulous features:
 
