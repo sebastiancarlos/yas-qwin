@@ -175,6 +175,7 @@ YAS-QWIN comes with some quirks:
 - Not as diverse as could be yet. It do be a fierce CLI though.
 - Might toss an "AYY LMAO" at you, for that's its way of saying "Under
   construction."
+- Not all the SQL commands are supported. `SELECT`, `INSERT` and `UPDATE` are actually quite hard to implement. They are the main villains of the YAS-QWIN dev team, AYY LMAO.
 
 ## Disclaimer
 
