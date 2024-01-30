@@ -365,7 +365,8 @@ Usage: yas-qwin --drop-column TABLE COLUMN
     sql += f"ALTER TABLE {table} DROP COLUMN {column};"
 elif command == COMMAND_CREATE_INDEX:
     if help:
-        print( """Usage: yas-qwin --create-index [INDEX-NAME] [TABLE] [INDEXED-COLUMNS] [OPTIONS]
+        print("""\
+Usage: yas-qwin --create-index [INDEX-NAME] [TABLE] [INDEXED-COLUMNS] [OPTIONS]
         
 - Create an index on a column
 - INDEXED-COLUMNS is a comma-separated list of columns
