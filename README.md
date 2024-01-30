@@ -131,7 +131,7 @@ Usage: yas-qwin --list-tables
 
 #### Default output:
 
-```bash
+```sql
 -- List tables in database
 SELECT name FROM sqlite_schema WHERE type='table';
 ```
@@ -147,7 +147,7 @@ Usage: yas-qwin --list-indexes
 
 #### Default output:
 
-```bash
+```sql
 -- List indexes in database
 SELECT name FROM sqlite_schema WHERE type='index';
 ```
@@ -163,7 +163,7 @@ Usage: yas-qwin --print-schemas
 
 #### Default output:
 
-```bash
+```sql
 -- Print schema of all tables and indexes in database
 SELECT sql FROM sqlite_schema;
 ```
@@ -180,7 +180,7 @@ Usage: yas-qwin --print-table [TABLES]
 
 #### Default output:
 
-```bash
+```sql
 -- Print contents of tables
 SELECT * FROM sample-table;
 ```
@@ -195,7 +195,7 @@ Usage: yas-qwin --rename-table TABLE NEW_NAME
 
 #### Default output:
 
-```bash
+```sql
 -- Rename table
 ALTER TABLE old_table RENAME TO new_table;
 ```
@@ -210,7 +210,7 @@ Usage: yas-qwin --rename-column TABLE COLUMN NEW_NAME
 
 #### Default output:
 
-```bash
+```sql
 -- Rename column in table
 ALTER TABLE sample_table RENAME COLUMN old_column TO new_column;
 ```
@@ -225,7 +225,7 @@ Usage: yas-qwin --add-column TABLE COLUMN_DEF
 
 #### Default output:
 
-```bash
+```sql
 -- Add column to table
 ALTER TABLE sample_table ADD COLUMN column_def;
 ```
@@ -240,7 +240,7 @@ Usage: yas-qwin --drop-column TABLE COLUMN
 
 #### Default output:
 
-```bash
+```sql
 -- Drop column from table
 ALTER TABLE sample_table DROP COLUMN sample_column;
 ```
@@ -261,7 +261,7 @@ Options:
 
 #### Default output:
 
-```bash
+```sql
 -- Create index
 CREATE INDEX sample_index ON sample_table (sample_column);
 ```
@@ -279,7 +279,7 @@ Options:
 
 #### Default output:
 
-```bash
+```sql
 -- Drop index
 DROP INDEX sample_index;
 ```
@@ -295,7 +295,7 @@ Usage: yas-qwin --reindex [INDEX-NAME]
 
 #### Default output:
 
-```bash
+```sql
 -- Reindex
 REINDEX;
 ```
@@ -315,7 +315,7 @@ SQLite only options:
 
 #### Default output:
 
-```bash
+```sql
 -- Create table
 CREATE TABLE sample_table (sample_column_defs, sample_table_constraints) STRICT;
 ```
@@ -339,7 +339,7 @@ Options:
 
 #### Default output:
 
-```bash
+```sql
 sample_column sample_type
 ```
 
@@ -366,7 +366,7 @@ CONFLICT_CLAUSE can be one of:
 
 #### Default output:
 
-```bash
+```sql
 
 ```
 
@@ -388,7 +388,7 @@ VALUE can be one of:
 
 #### Default output:
 
-```bash
+```sql
 REFERENCES foreign_table_name (foreign_column_names)
 ```
 
@@ -404,7 +404,7 @@ Usage: yas-qwin --returning [COLUMN_NAMES]
 
 #### Default output:
 
-```bash
+```sql
 RETURNING *
 ```
 
