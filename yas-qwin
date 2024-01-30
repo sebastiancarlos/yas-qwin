@@ -139,7 +139,7 @@ Two ways of passing commands are supported:
   2. Using --COMMAND
     
 Commands:
-    {list_of_commands}
+{list_of_commands}
 Options:
   -l, --list-commands    One per line
   -r, --run              Run it in your SQLite db

@@ -65,7 +65,7 @@ Two ways of passing commands are supported:
   2. Using --COMMAND
     
 Commands:
-      list-tables	drop-index
+  list-tables	drop-index
   list-indexes	reindex
   print-schemas	create-table
   print-table	column-def
