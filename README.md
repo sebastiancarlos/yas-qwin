@@ -1,3 +1,5 @@
+<!-- Note: This README.md file was automatically generated. Plase run `make readme` to generate a new one. -->
+
 # YAS-QWIN (Yet Another SQL-Query Writing Interface)
 
 **YAS-QWIN** is a CLI tool for building (and optionally running) SQL queries.
@@ -63,14 +65,15 @@ Two ways of passing commands are supported:
   2. Using --COMMAND
 
 Commands:
-  list-tables	drop-column
-  list-indexes	create-index
-  print-schemas	drop-index
-  print-table	reindex
-  rename-table	create-table
-  rename-column	column-def
-  add-column	table-constr
-  drop-column	foreign-key-clause
+  list-tables	create-index
+  list-indexes	drop-index
+  print-schemas	reindex
+  print-table	create-table
+  rename-table	column-def
+  rename-column	table-constr
+  add-column	foreign-key-clause
+  drop-column	returning-clause
+  create-index
 
 Options:
   -l, --list-commands    One per line
@@ -80,12 +83,14 @@ Options:
   -h, --help             Run with any command
 ```
 
-Or run it in your database.
+Or run it in your database directly. 
 
 `yas-qwin -d your_database.db -c print-indexes --run`
 
 **Note:** You don't need to pass a database file if there's a single `*.db`
 file in your current directory.
+
+*(Careful Icarus, do not fly close to the sun without sanitizing inputs)*
 
 ## Commandments
 
@@ -103,10 +108,10 @@ YAS-QWIN's commands shall lead the faithful:
 - `drop-index`
 - `reindex`
 - `create-table`
-  - This one is so badass it has its own subcommands:
-    - `column-def`
-    - `table-constr`
-    - `foreign-key-clause`
+- `column-def`
+- `table-constr`
+- `foreign-key-clause`
+- `returning-clause`
 
 ## Help
 
@@ -115,32 +120,57 @@ Every one of YAS-QWIN's commands comes with its own help message. Just type
 
 But because you are busy, here they are:
 
-### `list-tables` 
-```
+### `list-tables`
+
+```bash
 Usage: yas-qwin --list-tables
 
 - List names of all tables in database
 - Note: SQLite only
 ```
 
-### `list-indexes` 
+#### Default output:
+
+```bash
+-- List tables in database
+SELECT name FROM sqlite_schema WHERE type='table';
 ```
+
+### `list-indexes`
+
+```bash
 Usage: yas-qwin --list-indexes
 
 - List names of all indexes in database
 - Note: SQLite only
 ```
 
-### `print-schemas` 
+#### Default output:
+
+```bash
+-- List indexes in database
+SELECT name FROM sqlite_schema WHERE type='index';
 ```
+
+### `print-schemas`
+
+```bash
 Usage: yas-qwin --print-schemas
 
 - Print schema of all tables and indexes in database
 - Note: SQLite only
 ```
 
-### `print-table` 
+#### Default output:
+
+```bash
+-- Print schema of all tables and indexes in database
+SELECT sql FROM sqlite_schema;
 ```
+
+### `print-table`
+
+```bash
 Usage: yas-qwin --print-table [TABLES]
 
 - Print contents of tables
@@ -148,29 +178,76 @@ Usage: yas-qwin --print-table [TABLES]
         fetch all tables and print them all
 ```
 
-### `rename-table` 
+#### Default output:
+
+```bash
+-- Print contents of tables
+SELECT * FROM sample-table;
 ```
-Usage: yas-qwin --rename-table [TABLE] [NEW NAME]
+
+### `rename-table`
+
+```bash
+Usage: yas-qwin --rename-table TABLE NEW_NAME
 
 - Rename a table
 ```
 
-### `rename-column` 
+#### Default output:
+
+```bash
+-- Rename table
+ALTER TABLE old_table RENAME TO new_table;
 ```
-Usage: yas-qwin --rename-column [TABLE] [COLUMN] [NEW NAME]
+
+### `rename-column`
+
+```bash
+Usage: yas-qwin --rename-column TABLE COLUMN NEW_NAME
 
 - Rename a column
 ```
 
-### `drop-column` 
+#### Default output:
+
+```bash
+-- Rename column in table
+ALTER TABLE sample_table RENAME COLUMN old_column TO new_column;
 ```
-Usage: yas-qwin --drop-column [TABLE] [COLUMN]
+
+### `add-column`
+
+```bash
+Usage: yas-qwin --add-column TABLE COLUMN_DEF
+
+- Add a column
+```
+
+#### Default output:
+
+```bash
+-- Add column to table
+ALTER TABLE sample_table ADD COLUMN column_def;
+```
+
+### `drop-column`
+
+```bash
+Usage: yas-qwin --drop-column TABLE COLUMN
 
 - Drop a column
 ```
 
-### `create-index` 
+#### Default output:
+
+```bash
+-- Drop column from table
+ALTER TABLE sample_table DROP COLUMN sample_column;
 ```
+
+### `create-index`
+
+```bash
 Usage: yas-qwin --create-index [INDEX-NAME] [TABLE] [INDEXED-COLUMNS] [OPTIONS]
 
 - Create an index on a column
@@ -182,8 +259,16 @@ Options:
   -i/--if-not-exists: Do not error if index already exists
 ```
 
-### `drop-index` 
+#### Default output:
+
+```bash
+-- Create index
+CREATE INDEX sample_index ON sample_table (sample_column);
 ```
+
+### `drop-index`
+
+```bash
 Usage: yas-qwin --drop-index [INDEX-NAME] [OPTIONS]
 
 - Drop an index
@@ -192,12 +277,27 @@ Options:
   -i/--if-exists: Do not error if index does not exist
 ```
 
-### `reindex` 
+#### Default output:
+
+```bash
+-- Drop index
+DROP INDEX sample_index;
 ```
+
+### `reindex`
+
+```bash
 Usage: yas-qwin --reindex [INDEX-NAME]
 
 - Reindex a table
 - If no index is specified, reindex all tables
+```
+
+#### Default output:
+
+```bash
+-- Reindex
+REINDEX;
 ```
 
 ### `create-table`
@@ -213,6 +313,13 @@ SQLite only options:
   -w, --without-rowid
 ```
 
+#### Default output:
+
+```bash
+-- Create table
+CREATE TABLE sample_table (sample_column_defs, sample_table_constraints) STRICT;
+```
+
 ### `column-def`
 
 ```bash
@@ -225,9 +332,15 @@ Options:
   -u, --unique [CONFLICT-CLAUSE]
   -k, --check VALUE
   -d, --default VALUE
-  -f, --foreign-key FOREIGN_KEY
+  -f, --foreign-key FOREIGN_KEY_CLAUSE
   -g, --generated-as VALUE
   -s, --stored
+```
+
+#### Default output:
+
+```bash
+sample_column sample_type
 ```
 
 ### `table-constr`
@@ -251,6 +364,12 @@ CONFLICT_CLAUSE can be one of:
   replace
 ```
 
+#### Default output:
+
+```bash
+
+```
+
 ### `foreign-key-clause`
 
 ```bash
@@ -264,7 +383,29 @@ VALUE can be one of:
   cascade
   restrict
   "set null"/"null"
-  "set default"/"default
+  "set default"/"default"
+```
+
+#### Default output:
+
+```bash
+REFERENCES foreign_table_name (foreign_column_names)
+```
+
+### `returning-clause`
+
+```bash
+Usage: yas-qwin --returning [COLUMN_NAMES]
+
+  - Return the modified rows back to the application.
+  - If COLUMN_NAMES is not specified, '*' is set and
+    all columns are returned.
+```
+
+#### Default output:
+
+```bash
+RETURNING *
 ```
 
 ## Advanced Example

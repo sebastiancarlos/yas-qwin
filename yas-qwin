@@ -29,6 +29,7 @@ COMMAND_CREATE_TABLE = "create-table"
 COMMAND_COLUMN_DEFINITION = "column-def"
 COMMAND_TABLE_CONSTRAINT = "table-constr"
 COMMAND_FOREIGN_KEY = "foreign-key-clause"
+COMMAND_RETURNING_CLAUSE = "returning-clause"
 COMMANDS = [
     COMMAND_LIST_TABLES,
     COMMAND_LIST_INDEXES,
@@ -45,6 +46,7 @@ COMMANDS = [
     COMMAND_COLUMN_DEFINITION,
     COMMAND_TABLE_CONSTRAINT,
     COMMAND_FOREIGN_KEY,
+    COMMAND_RETURNING_CLAUSE,
 ]
 
 COMMANDS_WITH_OUTPUT = [
@@ -58,6 +60,7 @@ NON_RUNNABLE_COMMANDS = [
     COMMAND_COLUMN_DEFINITION,
     COMMAND_TABLE_CONSTRAINT,
     COMMAND_FOREIGN_KEY,
+    COMMAND_RETURNING_CLAUSE,
 ]
 
 ##############################
@@ -250,7 +253,7 @@ elif command == COMMAND_PRINT_TABLE:
 elif command == COMMAND_RENAME_TABLE:
     # if --help was passed, print usage and exit
     if help:
-        print("Usage: yas-qwin --rename-table [TABLE] [NEW NAME]")
+        print("Usage: yas-qwin --rename-table TABLE NEW_NAME")
         print("")
         print("- Rename a table")
         sys.exit(0)
@@ -267,7 +270,7 @@ elif command == COMMAND_RENAME_TABLE:
     sql += f"ALTER TABLE {alter_table} RENAME TO {new_name};"
 elif command == COMMAND_RENAME_COLUMN:
     if help:
-        print("Usage: yas-qwin --rename-column [TABLE] [COLUMN] [NEW NAME]")
+        print("Usage: yas-qwin --rename-column TABLE COLUMN NEW_NAME")
         print("")
         print("- Rename a column")
         sys.exit(0)
@@ -285,11 +288,25 @@ elif command == COMMAND_RENAME_COLUMN:
     sql = "-- Rename column in table\n"
     sql += f"ALTER TABLE {table} RENAME COLUMN {column} TO {new_name};"
 elif command == COMMAND_ADD_COLUMN:
-    print("Error: Not implemented yet, AYY LMAO")
-    sys.exit(1)
+    if help: 
+        print("Usage: yas-qwin --add-column TABLE COLUMN_DEF")
+        print("")
+        print("- Add a column")
+        sys.exit(0)
+
+    if len(positionals) == 3:
+        table = positionals[0]
+        column = positionals[1]
+        column_def = positionals[2]
+    else:
+        table = "sample_table"
+        column_def = "column_def"
+
+    sql = "-- Add column to table\n"
+    sql += f"ALTER TABLE {table} ADD COLUMN {column_def};"
 elif command == COMMAND_DROP_COLUMN:
     if help:
-        print("Usage: yas-qwin --drop-column [TABLE] [COLUMN]")
+        print("Usage: yas-qwin --drop-column TABLE COLUMN")
         print("")
         print("- Drop a column")
         sys.exit(0)
@@ -451,7 +468,7 @@ elif command == COMMAND_CREATE_TABLE:
             table_constraints = positionals[2]
     else:
         table = "sample_table"
-        columns = "sample_columns"
+        columns = "sample_column_defs"
         table_constraints = "sample_table_constraints"
 
     sql = "-- Create table\n"
@@ -488,7 +505,7 @@ elif command == COMMAND_COLUMN_DEFINITION:
         print("  -u, --unique [CONFLICT-CLAUSE]")
         print("  -k, --check VALUE")
         print("  -d, --default VALUE")
-        print("  -f, --foreign-key FOREIGN_KEY")
+        print("  -f, --foreign-key FOREIGN_KEY_CLAUSE")
         print("  -g, --generated-as VALUE")
         print("  -s, --stored")
         exit(0)
@@ -720,6 +737,27 @@ elif command == COMMAND_TABLE_CONSTRAINT:
         sql = f"CHECK ({check[0]})"
     elif foreign_key:
         sql = f"FOREIGN KEY ({column_names}) {foreign_key[0]}"
+elif command == COMMAND_RETURNING_CLAUSE:
+    if help:
+        print(f"Usage: yas-qwin --returning [COLUMN_NAMES]")
+        print("")
+        print("  - Return the modified rows back to the application.")
+        print("  - If COLUMN_NAMES is not specified, '*' is set and")
+        print("    all columns are returned.")
+        exit(0)
+
+    if len(positionals) == 1:
+        column_names = positionals[0]
+    else:
+        column_names = "*"
+    
+    sql = f"RETURNING {column_names}"
+
+
+
+################
+# PRINT OR RUN #
+################
 
 # if --run, execute SQL query, else print it
 if run:

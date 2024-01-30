@@ -54,3 +54,9 @@ uninstall:
   @rm -f $(DESTDIR)$(bindir)/yas-qwin
   @echo -e '   'Deleting file $(green)yas-qwin$(reset) in $(green)$(DESTDIR)$(bindir)/$(reset)$(bold)yas-qwin$(reset)
   @echo -e $(green)Uninstalling DONE$(reset)
+
+.PHONY: readme
+readme:
+  @echo -e $(blue)Building README.md ...$(reset)
+  @./.internal-scripts/build-readme
+  @echo -e $(green)Building README.md DONE$(reset)
