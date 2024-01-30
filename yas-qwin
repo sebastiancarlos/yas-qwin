@@ -131,7 +131,8 @@ if command is None:
         else:
             list_of_commands += f"  {COMMANDS[i]}\n"
 
-    print(f"""Usage: yas-qwin [OPTIONS] [COMMAND OPTIONS AND ARGS]
+    print(f"""\
+Usage: yas-qwin [OPTIONS] [COMMAND OPTIONS AND ARGS]
     
 Two ways of passing commands are supported:
   1. Using -c/--command COMMAND 
@@ -201,7 +202,8 @@ def conflict_value_to_sql(value):
 
 
 def print_conflict_usage():
-    print("""CONFLICT_CLAUSE can be one of:
+    print("""\
+CONFLICT_CLAUSE can be one of:
   rollback
   abort
   fail
@@ -221,7 +223,8 @@ custom_mode = None
 if command == COMMAND_LIST_TABLES:
     if DATABASE_TYPE == "sqlite":
         if help:
-            print("""Usage: yas-qwin --list-tables
+            print("""\
+Usage: yas-qwin --list-tables
 
 - List names of all tables in database
 - Note: SQLite only
@@ -234,7 +237,8 @@ if command == COMMAND_LIST_TABLES:
 if command == COMMAND_LIST_INDEXES:
     if DATABASE_TYPE == "sqlite":
         if help:
-            print("""Usage: yas-qwin --list-indexes
+            print("""\
+Usage: yas-qwin --list-indexes
             
 - List names of all indexes in database
 - Note: SQLite only
@@ -247,7 +251,8 @@ if command == COMMAND_LIST_INDEXES:
 elif command == COMMAND_PRINT_SCHEMAS:
     if DATABASE_TYPE == "sqlite":
         if help:
-            print("""Usage: yas-qwin --print-schemas
+            print("""\
+Usage: yas-qwin --print-schemas
             
 - Print schema of all tables and indexes in database
 - Note: SQLite only
@@ -259,7 +264,8 @@ elif command == COMMAND_PRINT_SCHEMAS:
         sql += "SELECT sql FROM sqlite_schema;"
 elif command == COMMAND_PRINT_TABLE:
     if help:
-        print("""Usage: yas-qwin --print-table [TABLES]
+        print("""\
+Usage: yas-qwin --print-table [TABLES]
         
 - Print contents of tables
 - Note: If no TABLES passed and an SQLite database is in range,
@@ -281,7 +287,8 @@ elif command == COMMAND_PRINT_TABLE:
 elif command == COMMAND_RENAME_TABLE:
     # if --help was passed, print usage and exit
     if help:
-        print("""Usage: yas-qwin --rename-table TABLE NEW_NAME
+        print("""\
+Usage: yas-qwin --rename-table TABLE NEW_NAME
         
 - Rename a table
 """)
@@ -299,7 +306,8 @@ elif command == COMMAND_RENAME_TABLE:
     sql += f"ALTER TABLE {alter_table} RENAME TO {new_name};"
 elif command == COMMAND_RENAME_COLUMN:
     if help:
-        print("""Usage: yas-qwin --rename-column TABLE COLUMN NEW_NAME
+        print("""\
+Usage: yas-qwin --rename-column TABLE COLUMN NEW_NAME
         
 - Rename a column
 """)
@@ -319,7 +327,8 @@ elif command == COMMAND_RENAME_COLUMN:
     sql += f"ALTER TABLE {table} RENAME COLUMN {column} TO {new_name};"
 elif command == COMMAND_ADD_COLUMN:
     if help: 
-        print("""Usage: yas-qwin --add-column TABLE COLUMN_DEF
+        print("""\
+Usage: yas-qwin --add-column TABLE COLUMN_DEF
         
 - Add a column
 """)
@@ -337,7 +346,8 @@ elif command == COMMAND_ADD_COLUMN:
     sql += f"ALTER TABLE {table} ADD COLUMN {column_def};"
 elif command == COMMAND_DROP_COLUMN:
     if help:
-        print("""Usage: yas-qwin --drop-column TABLE COLUMN
+        print("""\
+Usage: yas-qwin --drop-column TABLE COLUMN
         
 - Drop a column
 """)
@@ -404,7 +414,8 @@ Options:
     sql += ";"
 elif command == COMMAND_DROP_INDEX:
     if help:
-        print("""Usage: yas-qwin --drop-index [INDEX-NAME] [OPTIONS]
+        print("""\
+Usage: yas-qwin --drop-index [INDEX-NAME] [OPTIONS]
         
 - Drop an index
         
@@ -435,7 +446,8 @@ Options:
     sql += f'DROP INDEX {"IF EXISTS " if if_exists else ""}{index};'
 elif command == COMMAND_REINDEX:
     if help:
-        print("""Usage: yas-qwin --reindex [INDEX-NAME]
+        print("""\
+Usage: yas-qwin --reindex [INDEX-NAME]
         
 - Reindex a table
 - If no index is specified, reindex all tables
@@ -456,7 +468,8 @@ elif command == COMMAND_REINDEX:
 elif command == COMMAND_CREATE_TABLE:
     # if --help was passed, print usage and exit
     if help:
-        print(f"""Usage: yas-qwin --{command} [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]
+        print(f"""\
+Usage: yas-qwin --{command} [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]
 Options:
   -t, --temporary
   -i, --if-not-exists
@@ -528,7 +541,8 @@ SQLite only options:
 elif command == COMMAND_COLUMN_DEFINITION:
     # if --help was passed, print command usage and exit
     if help:
-        print(f"""Usage: yas-qwin --{command} COLUMN_NAME TYPE [OPTIONS]
+        print(f"""\
+Usage: yas-qwin --{command} COLUMN_NAME TYPE [OPTIONS]
 Options:
   -p, --primary-key [CONFLICT-CLAUSE]
   -a, --autoincrement
@@ -633,7 +647,8 @@ Options:
 elif command == COMMAND_FOREIGN_KEY:
     # if --help was passed, print command usage and exit
     if help:
-        print(f"""Usage: yas-qwin --foreign-key-clause FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]
+        print(f"""\
+Usage: yas-qwin --foreign-key-clause FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]
 Options:
   -e, --on-delete VALUE
   -u, --on-update VALUE
@@ -700,7 +715,8 @@ set default
 elif command == COMMAND_TABLE_CONSTRAINT:
     # if --help was passed, print command usage and exit
     if help:
-        print(f"""Usage: yas-qwin --table-constr [COLUMN_NAMES] [OPTIONS]
+        print(f"""\
+Usage: yas-qwin --table-constr [COLUMN_NAMES] [OPTIONS]
 Options:
   -p, --primary-key [CONFLICT_CLAUSE]
   -u, --unique [CONFLICT_CLAUSE]
@@ -766,7 +782,8 @@ Note: COLUMN_NAMES are needed for PRIMARY KEY, UNIQUE, or
         sql = f"FOREIGN KEY ({column_names}) {foreign_key[0]}"
 elif command == COMMAND_RETURNING_CLAUSE:
     if help:
-        print(f"""Usage: yas-qwin --returning [COLUMN_NAMES]
+        print(f"""\
+Usage: yas-qwin --returning [COLUMN_NAMES]
         
   - Return the modified rows back to the application.
   - If COLUMN_NAMES is not specified, '*' is set and
@@ -782,7 +799,8 @@ elif command == COMMAND_RETURNING_CLAUSE:
     sql = f"RETURNING {column_names}"
 elif command == COMMAND_WITH_CLAUSE:
     if help:
-        print(f"""Usage: yas-qwin --with-clause CTE_DEFS [OPTIONS]
+        print(f"""\
+Usage: yas-qwin --with-clause CTE_DEFS [OPTIONS]
         
   - WITH_CLAUSE is a comma separated list of common table
     expressions (CTEs).
@@ -815,7 +833,8 @@ Options:
     sql += f"{with_clause}"
 elif command == COMMAND_CTE_DEF:
     if help:
-        print(f"""Usage: yas-qwin --cte-def CTE_NAME SELECT-CLAUSE [OPTIONS]
+        print(f"""\
+Usage: yas-qwin --cte-def CTE_NAME SELECT-CLAUSE [OPTIONS]
         
   - CTE_NAME is the name of the common table expression.
   - To be used in a WITH clause.
