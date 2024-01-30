@@ -131,20 +131,21 @@ if command is None:
         else:
             list_of_commands += f"  {COMMANDS[i]}\n"
 
-    print("Usage: yas-qwin [OPTIONS] [COMMAND OPTIONS AND ARGS]")
-    print("")
-    print("Two ways of passing commands are supported:")
-    print("  1. Using -c/--command COMMAND ")
-    print("  2. Using --COMMAND")
-    print("")
-    print("Commands:")
-    print(list_of_commands)
-    print("Options:")
-    print("  -l, --list-commands    One per line")
-    print("  -r, --run              Run it in your SQLite db")
-    print("  -d, --database         Database file to use")
-    print("  -c, --command          Command to run")
-    print("  -h, --help             Run with any command")
+    print(f"""Usage: yas-qwin [OPTIONS] [COMMAND OPTIONS AND ARGS]
+    
+Two ways of passing commands are supported:
+  1. Using -c/--command COMMAND 
+  2. Using --COMMAND
+    
+Commands:
+    {list_of_commands}
+Options:
+  -l, --list-commands    One per line
+  -r, --run              Run it in your SQLite db
+  -d, --database         Database file to use
+  -c, --command          Command to run
+  -h, --help             Run with any command
+""")
     sys.exit(0)
 
 #####################
@@ -200,13 +201,13 @@ def conflict_value_to_sql(value):
 
 
 def print_conflict_usage():
-    print("CONFLICT_CLAUSE can be one of:")
-    print("  rollback")
-    print("  abort")
-    print("  fail")
-    print("  ignore")
-    print("  replace")
-
+    print("""CONFLICT_CLAUSE can be one of:
+  rollback
+  abort
+  fail
+  ignore
+  replace
+""")
 
 ################
 # SQL BUILDING #
@@ -220,10 +221,11 @@ custom_mode = None
 if command == COMMAND_LIST_TABLES:
     if DATABASE_TYPE == "sqlite":
         if help:
-            print("Usage: yas-qwin --list-tables")
-            print("")
-            print("- List names of all tables in database")
-            print("- Note: SQLite only")
+            print("""Usage: yas-qwin --list-tables
+
+- List names of all tables in database
+- Note: SQLite only
+""")
             sys.exit(0)
 
         custom_mode = "list"
@@ -232,10 +234,11 @@ if command == COMMAND_LIST_TABLES:
 if command == COMMAND_LIST_INDEXES:
     if DATABASE_TYPE == "sqlite":
         if help:
-            print("Usage: yas-qwin --list-indexes")
-            print("")
-            print("- List names of all indexes in database")
-            print("- Note: SQLite only")
+            print("""Usage: yas-qwin --list-indexes
+            
+- List names of all indexes in database
+- Note: SQLite only
+""")
             sys.exit(0)
 
         custom_mode = "list"
@@ -244,10 +247,11 @@ if command == COMMAND_LIST_INDEXES:
 elif command == COMMAND_PRINT_SCHEMAS:
     if DATABASE_TYPE == "sqlite":
         if help:
-            print("Usage: yas-qwin --print-schemas")
-            print("")
-            print("- Print schema of all tables and indexes in database")
-            print("- Note: SQLite only")
+            print("""Usage: yas-qwin --print-schemas
+            
+- Print schema of all tables and indexes in database
+- Note: SQLite only
+""")
             sys.exit(0)
 
         custom_mode = "list"
@@ -255,11 +259,12 @@ elif command == COMMAND_PRINT_SCHEMAS:
         sql += "SELECT sql FROM sqlite_schema;"
 elif command == COMMAND_PRINT_TABLE:
     if help:
-        print("Usage: yas-qwin --print-table [TABLES]")
-        print("")
-        print("- Print contents of tables")
-        print("- Note: If no TABLES passed and an SQLite database is in range,")
-        print("        fetch all tables and print them all")
+        print("""Usage: yas-qwin --print-table [TABLES]
+        
+- Print contents of tables
+- Note: If no TABLES passed and an SQLite database is in range,
+        fetch all tables and print them all
+""")
         sys.exit(0)
 
     # get arguments
@@ -276,9 +281,10 @@ elif command == COMMAND_PRINT_TABLE:
 elif command == COMMAND_RENAME_TABLE:
     # if --help was passed, print usage and exit
     if help:
-        print("Usage: yas-qwin --rename-table TABLE NEW_NAME")
-        print("")
-        print("- Rename a table")
+        print("""Usage: yas-qwin --rename-table TABLE NEW_NAME
+        
+- Rename a table
+""")
         sys.exit(0)
 
     # this command expects a single table, so error if not the case
@@ -293,9 +299,10 @@ elif command == COMMAND_RENAME_TABLE:
     sql += f"ALTER TABLE {alter_table} RENAME TO {new_name};"
 elif command == COMMAND_RENAME_COLUMN:
     if help:
-        print("Usage: yas-qwin --rename-column TABLE COLUMN NEW_NAME")
-        print("")
-        print("- Rename a column")
+        print("""Usage: yas-qwin --rename-column TABLE COLUMN NEW_NAME
+        
+- Rename a column
+""")
         sys.exit(0)
 
     # expects a table, a column name, and a new column name
@@ -312,9 +319,10 @@ elif command == COMMAND_RENAME_COLUMN:
     sql += f"ALTER TABLE {table} RENAME COLUMN {column} TO {new_name};"
 elif command == COMMAND_ADD_COLUMN:
     if help: 
-        print("Usage: yas-qwin --add-column TABLE COLUMN_DEF")
-        print("")
-        print("- Add a column")
+        print("""Usage: yas-qwin --add-column TABLE COLUMN_DEF
+        
+- Add a column
+""")
         sys.exit(0)
 
     if len(positionals) == 3:
@@ -329,9 +337,10 @@ elif command == COMMAND_ADD_COLUMN:
     sql += f"ALTER TABLE {table} ADD COLUMN {column_def};"
 elif command == COMMAND_DROP_COLUMN:
     if help:
-        print("Usage: yas-qwin --drop-column TABLE COLUMN")
-        print("")
-        print("- Drop a column")
+        print("""Usage: yas-qwin --drop-column TABLE COLUMN
+        
+- Drop a column
+""")
         sys.exit(0)
 
     # expects a table and a column name
@@ -346,17 +355,16 @@ elif command == COMMAND_DROP_COLUMN:
     sql += f"ALTER TABLE {table} DROP COLUMN {column};"
 elif command == COMMAND_CREATE_INDEX:
     if help:
-        print(
-            "Usage: yas-qwin --create-index [INDEX-NAME] [TABLE] [INDEXED-COLUMNS] [OPTIONS]"
-        )
-        print("")
-        print("- Create an index on a column")
-        print("- INDEXED-COLUMNS is a comma-separated list of columns")
-        print("")
-        print("Options:")
-        print("  -u/--unique: Create a unique index")
-        print("  -w/--where EXPR: Create a partial index")
-        print("  -i/--if-not-exists: Do not error if index already exists")
+        print( """Usage: yas-qwin --create-index [INDEX-NAME] [TABLE] [INDEXED-COLUMNS] [OPTIONS]
+        
+- Create an index on a column
+- INDEXED-COLUMNS is a comma-separated list of columns
+        
+Options:
+  -u/--unique: Create a unique index
+  -w/--where EXPR: Create a partial index
+  -i/--if-not-exists: Do not error if index already exists
+""")
         sys.exit(0)
 
     # pass the remaining positional arguments to a new parser
@@ -396,12 +404,13 @@ elif command == COMMAND_CREATE_INDEX:
     sql += ";"
 elif command == COMMAND_DROP_INDEX:
     if help:
-        print("Usage: yas-qwin --drop-index [INDEX-NAME] [OPTIONS]")
-        print("")
-        print("- Drop an index")
-        print("")
-        print("Options:")
-        print("  -i/--if-exists: Do not error if index does not exist")
+        print("""Usage: yas-qwin --drop-index [INDEX-NAME] [OPTIONS]
+        
+- Drop an index
+        
+Options:
+  -i/--if-exists: Do not error if index does not exist
+""")
         sys.exit(0)
 
     # pass the remaining positional arguments to a new parser
@@ -426,10 +435,11 @@ elif command == COMMAND_DROP_INDEX:
     sql += f'DROP INDEX {"IF EXISTS " if if_exists else ""}{index};'
 elif command == COMMAND_REINDEX:
     if help:
-        print("Usage: yas-qwin --reindex [INDEX-NAME]")
-        print("")
-        print("- Reindex a table")
-        print("- If no index is specified, reindex all tables")
+        print("""Usage: yas-qwin --reindex [INDEX-NAME]
+        
+- Reindex a table
+- If no index is specified, reindex all tables
+""")
         sys.exit(0)
 
     # expect either one argument or none.
@@ -446,16 +456,15 @@ elif command == COMMAND_REINDEX:
 elif command == COMMAND_CREATE_TABLE:
     # if --help was passed, print usage and exit
     if help:
-        print(
-            f"Usage: yas-qwin --{command} [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]"
-        )
-        print("Options:")
-        print("  -t, --temporary")
-        print("  -i, --if-not-exists")
-        print("  -a, --as-select SELECT_STATEMENT")
-        print("SQLite only options:")
-        print("  -s, --strict (defaults to true)")
-        print("  -w, --without-rowid")
+        print(f"""Usage: yas-qwin --{command} [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]
+Options:
+  -t, --temporary
+  -i, --if-not-exists
+  -a, --as-select SELECT_STATEMENT
+SQLite only options:
+  -s, --strict (defaults to true)
+  -w, --without-rowid
+""")
         sys.exit(0)
 
     # pass the remaining positional arguments to a new parser
@@ -519,21 +528,23 @@ elif command == COMMAND_CREATE_TABLE:
 elif command == COMMAND_COLUMN_DEFINITION:
     # if --help was passed, print command usage and exit
     if help:
-        print(f"Usage: yas-qwin --{command} COLUMN_NAME TYPE [OPTIONS]")
-        print("Options:")
-        print("  -p, --primary-key [CONFLICT-CLAUSE]")
-        print("  -a, --autoincrement")
-        print("  -d, --descending")
-        print("  -n, --not-null [CONFLICT-CLAUSE]")
-        print("  -u, --unique [CONFLICT-CLAUSE]")
-        print("  -k, --check VALUE")
-        print("  -d, --default VALUE")
-        print("  -f, --foreign-key FOREIGN_KEY_CLAUSE")
-        print("  -g, --generated-as VALUE")
-        print("  -s, --stored")
-        print("")
+        print(f"""Usage: yas-qwin --{command} COLUMN_NAME TYPE [OPTIONS]
+Options:
+  -p, --primary-key [CONFLICT-CLAUSE]
+  -a, --autoincrement
+  -d, --descending
+  -n, --not-null [CONFLICT-CLAUSE]
+  -u, --unique [CONFLICT-CLAUSE]
+  -k, --check VALUE
+  -d, --default VALUE
+  -f, --foreign-key FOREIGN_KEY_CLAUSE
+  -g, --generated-as VALUE
+  -s, --stored
+""")
         print_conflict_usage()
         exit(0)
+
+
 
     # pass the remaining positional arguments to a new parser
     # to extract flags
@@ -622,19 +633,18 @@ elif command == COMMAND_COLUMN_DEFINITION:
 elif command == COMMAND_FOREIGN_KEY:
     # if --help was passed, print command usage and exit
     if help:
-        print(
-            f"Usage: yas-qwin --foreign-key-clause FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]"
-        )
-        print("Options:")
-        print("  -e, --on-delete VALUE")
-        print("  -u, --on-update VALUE")
-        print("  -f, --deferred")
-        print("")
-        print("VALUE can be one of:")
-        print("  cascade")
-        print("  restrict")
-        print('  "set null"/"null"')
-        print('  "set default"/"default"')
+        print(f"""Usage: yas-qwin --foreign-key-clause FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]
+Options:
+  -e, --on-delete VALUE
+  -u, --on-update VALUE
+  -f, --deferred
+
+VALUE can be one of:
+  cascade
+  restrict
+set null
+set default
+""")
         exit(0)
 
     # pass the remaining positional arguments to a new parser
@@ -690,16 +700,17 @@ elif command == COMMAND_FOREIGN_KEY:
 elif command == COMMAND_TABLE_CONSTRAINT:
     # if --help was passed, print command usage and exit
     if help:
-        print(f"Usage: yas-qwin --table-constr [COLUMN_NAMES] [OPTIONS]")
-        print("Options:")
-        print("  -p, --primary-key [CONFLICT_CLAUSE]")
-        print("  -u, --unique [CONFLICT_CLAUSE]")
-        print("  -k, --check VALUE")
-        print("  -f, --foreign-key FOREIGN_KEY_CLAUSE")
-        print("")
-        print("Note: COLUMN_NAMES are needed for PRIMARY KEY, UNIQUE, or")
-        print("      FOREIGN KEY constraints.")
-        print("")
+        print(f"""Usage: yas-qwin --table-constr [COLUMN_NAMES] [OPTIONS]
+Options:
+  -p, --primary-key [CONFLICT_CLAUSE]
+  -u, --unique [CONFLICT_CLAUSE]
+  -k, --check VALUE
+  -f, --foreign-key FOREIGN_KEY_CLAUSE
+        
+Note: COLUMN_NAMES are needed for PRIMARY KEY, UNIQUE, or
+      FOREIGN KEY constraints.
+        
+""")
         print_conflict_usage()
         exit(0)
 
@@ -755,11 +766,12 @@ elif command == COMMAND_TABLE_CONSTRAINT:
         sql = f"FOREIGN KEY ({column_names}) {foreign_key[0]}"
 elif command == COMMAND_RETURNING_CLAUSE:
     if help:
-        print(f"Usage: yas-qwin --returning [COLUMN_NAMES]")
-        print("")
-        print("  - Return the modified rows back to the application.")
-        print("  - If COLUMN_NAMES is not specified, '*' is set and")
-        print("    all columns are returned.")
+        print(f"""Usage: yas-qwin --returning [COLUMN_NAMES]
+        
+  - Return the modified rows back to the application.
+  - If COLUMN_NAMES is not specified, '*' is set and
+    all columns are returned.
+""")
         exit(0)
 
     if len(positionals) == 1:
@@ -770,13 +782,14 @@ elif command == COMMAND_RETURNING_CLAUSE:
     sql = f"RETURNING {column_names}"
 elif command == COMMAND_WITH_CLAUSE:
     if help:
-        print(f"Usage: yas-qwin --with-clause CTE_DEFS [OPTIONS]")
-        print("")
-        print("  - WITH_CLAUSE is a comma separated list of common table")
-        print("    expressions (CTEs).")
-        print("")
-        print("Options:")
-        print("  -r, --recursive    Needed if at least one CTE is recursive.")
+        print(f"""Usage: yas-qwin --with-clause CTE_DEFS [OPTIONS]
+        
+  - WITH_CLAUSE is a comma separated list of common table
+    expressions (CTEs).
+        
+Options:
+  -r, --recursive    Needed if at least one CTE is recursive.
+""")
         exit(0)
 
     # pass the remaining positional arguments to a new parser
@@ -802,10 +815,13 @@ elif command == COMMAND_WITH_CLAUSE:
     sql += f"{with_clause}"
 elif command == COMMAND_CTE_DEF:
     if help:
-        print(f"Usage: yas-qwin --cte-def CTE_NAME SELECT-CLAUSE [OPTIONS]")
-        print("")
-        print("Options:")
-        print("  -m, --materialized")
+        print(f"""Usage: yas-qwin --cte-def CTE_NAME SELECT-CLAUSE [OPTIONS]
+        
+  - CTE_NAME is the name of the common table expression.
+  - To be used in a WITH clause.
+Options:
+  -m, --materialized
+""")
         exit(0)
 
     # pass the remaining positional arguments to a new parser
