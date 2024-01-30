@@ -23,11 +23,8 @@ def get_output(command: list[str]) -> str:
 # generate 'usage'
 inserts['usage'] = get_output(["yas-qwin"])
 
-# generate 'commands' 
-commands = get_output(["yas-qwin", "--list-commands"]).split()
-inserts['commands'] = "\n".join(map(lambda x: f"- `{x}`", commands))
-
 # generate 'commands-help'
+commands = get_output(["yas-qwin", "--list-commands"]).split()
 template = """\
 ### `{command}`
 

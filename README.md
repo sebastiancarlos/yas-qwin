@@ -96,33 +96,10 @@ file in your current directory.
 
 ## Commandments
 
-YAS-QWIN's commands shall lead the faithful:
-
-- `list-tables`
-- `list-indexes`
-- `print-schemas`
-- `print-table`
-- `rename-table`
-- `rename-column`
-- `add-column`
-- `drop-column`
-- `create-index`
-- `drop-index`
-- `reindex`
-- `create-table`
-- `column-def`
-- `table-constr`
-- `foreign-key-clause`
-- `returning-clause`
-- `with-clause`
-- `cte-def`
-
-## Help
-
 Every one of YAS-QWIN's commands comes with its own help message. Just type
 `--help` after the command to get a detailed explanation of its usage.
 
-But because you are busy, here they are:
+YAS-QWIN's commands shall lead the faithful:
 
 ### `list-tables`
 

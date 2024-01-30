@@ -70,16 +70,10 @@ file in your current directory.
 
 ## Commandments
 
-YAS-QWIN's commands shall lead the faithful:
-
-<!-- INSERT commands -->
-
-## Help
-
 Every one of YAS-QWIN's commands comes with its own help message. Just type
 `--help` after the command to get a detailed explanation of its usage.
 
-But because you are busy, here they are:
+YAS-QWIN's commands shall lead the faithful:
 
 <!-- INSERT commands_help -->
 ## Advanced Example
