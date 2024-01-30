@@ -85,13 +85,8 @@ parser = argparse.ArgumentParser(
 parser.add_argument("positionals", nargs="*")
 parser.add_argument("-r", "--run", action="store_true", default=False)
 parser.add_argument("-d", "--database")
-parser.add_argument("-c", "--command", choices=COMMANDS)
 parser.add_argument("-l", "--list-commands", action="store_true")
 parser.add_argument("-h", "--help", action="store_true")
-
-# commans can be passed both as `-c COMMAND` and `--COMMAND`
-for command in COMMANDS:
-    parser.add_argument(f"--{command}", action="store_true")
 
 # parse arguments
 args, unparsed = parser.parse_known_intermixed_args()
@@ -104,17 +99,8 @@ if args.list_commands:
 
 # unpack arguments
 database = args.database
-command = args.command
 help = args.help
 run = args.run
-
-# if any of the long-option commands were passed, it becomes the TRUE command.
-# All bow down
-for cmd in COMMANDS:
-    lowdash_command = cmd.replace("-", "_")
-    if getattr(args, lowdash_command):
-        command = cmd
-        break
 
 # The idea is to save all the unexpected options to "positionals" to pass them
 # to other "commands" which parse their own options. A bit of a hack is needed
@@ -123,7 +109,13 @@ for cmd in COMMANDS:
 unordered_positionals = args.positionals + unparsed
 positionals = list(filter(lambda arg: arg in unordered_positionals, sys.argv))
 
-# print top level help if no command was passed
+# the first argument must be a known command.
+command = None
+if len(positionals) > 0 and positionals[0] in COMMANDS:
+    command = positionals[0]
+    positionals = positionals[1:]
+
+# print top level help
 if command is None:
     # generate a list of commands in two columns:
     #   COMMAND\tCOMMAND\n
@@ -136,11 +128,7 @@ if command is None:
             list_of_commands += f"  {COMMANDS[i]}\n"
 
     print(f"""\
-Usage: yas-qwin [OPTIONS] [COMMAND OPTIONS AND ARGS]
-    
-Two ways of passing commands are supported:
-  1. Using -c/--command COMMAND 
-  2. Using --COMMAND
+Usage: yas-qwin [OPTIONS] COMMAND [COMMAND OPTIONS AND ARGS]
     
 Commands:
 {list_of_commands}
@@ -197,10 +185,14 @@ def fetch_table_names():
         return tables
 
 
-def conflict_value_to_sql(value):
+def conflict_value_to_sql(value, with_prefix=False):
     CONFLICT_CLAUSE_VALUES = ["rollback", "abort", "fail", "ignore", "replace"]
     if value in CONFLICT_CLAUSE_VALUES:
-        return f"ON CONFLICT {value.upper()}"
+        result = ""
+        if with_prefix:
+            result += "ON CONFLICT "
+        result += f"{value.upper()}"
+        return result
     else:
         return value
 
@@ -228,7 +220,7 @@ if command == COMMAND_LIST_TABLES:
     if DATABASE_TYPE == "sqlite":
         if help:
             print("""\
-Usage: yas-qwin --list-tables
+Usage: yas-qwin list-tables
 
 - List names of all tables in database
 - Note: SQLite only
@@ -242,7 +234,7 @@ if command == COMMAND_LIST_INDEXES:
     if DATABASE_TYPE == "sqlite":
         if help:
             print("""\
-Usage: yas-qwin --list-indexes
+Usage: yas-qwin list-indexes
             
 - List names of all indexes in database
 - Note: SQLite only
@@ -256,7 +248,7 @@ elif command == COMMAND_PRINT_SCHEMAS:
     if DATABASE_TYPE == "sqlite":
         if help:
             print("""\
-Usage: yas-qwin --print-schemas
+Usage: yas-qwin print-schemas
             
 - Print schema of all tables and indexes in database
 - Note: SQLite only
@@ -269,7 +261,7 @@ Usage: yas-qwin --print-schemas
 elif command == COMMAND_PRINT_TABLE:
     if help:
         print("""\
-Usage: yas-qwin --print-table [TABLES]
+Usage: yas-qwin print-table [TABLES]
         
 - Print contents of tables
 - Note: If no TABLES passed and an SQLite database is in range,
@@ -292,7 +284,7 @@ elif command == COMMAND_RENAME_TABLE:
     # if --help was passed, print usage and exit
     if help:
         print("""\
-Usage: yas-qwin --rename-table TABLE NEW_NAME
+Usage: yas-qwin rename-table TABLE NEW_NAME
         
 - Rename a table
 """)
@@ -311,7 +303,7 @@ Usage: yas-qwin --rename-table TABLE NEW_NAME
 elif command == COMMAND_RENAME_COLUMN:
     if help:
         print("""\
-Usage: yas-qwin --rename-column TABLE COLUMN NEW_NAME
+Usage: yas-qwin rename-column TABLE COLUMN NEW_NAME
         
 - Rename a column
 """)
@@ -332,7 +324,7 @@ Usage: yas-qwin --rename-column TABLE COLUMN NEW_NAME
 elif command == COMMAND_ADD_COLUMN:
     if help: 
         print("""\
-Usage: yas-qwin --add-column TABLE COLUMN_DEF
+Usage: yas-qwin add-column TABLE COLUMN_DEF
         
 - Add a column
 """)
@@ -351,7 +343,7 @@ Usage: yas-qwin --add-column TABLE COLUMN_DEF
 elif command == COMMAND_DROP_COLUMN:
     if help:
         print("""\
-Usage: yas-qwin --drop-column TABLE COLUMN
+Usage: yas-qwin drop-column TABLE COLUMN
         
 - Drop a column
 """)
@@ -370,7 +362,7 @@ Usage: yas-qwin --drop-column TABLE COLUMN
 elif command == COMMAND_CREATE_INDEX:
     if help:
         print("""\
-Usage: yas-qwin --create-index [INDEX-NAME] [TABLE] [INDEXED-COLUMNS] [OPTIONS]
+Usage: yas-qwin create-index [INDEX-NAME] [TABLE] [INDEXED-COLUMNS] [OPTIONS]
         
 - Create an index on a column
 - INDEXED-COLUMNS is a comma-separated list of columns
@@ -417,7 +409,7 @@ Options:
 elif command == COMMAND_DROP_INDEX:
     if help:
         print("""\
-Usage: yas-qwin --drop-index [INDEX-NAME] [OPTIONS]
+Usage: yas-qwin drop-index [INDEX-NAME] [OPTIONS]
         
 - Drop an index
         
@@ -446,7 +438,7 @@ Options:
 elif command == COMMAND_REINDEX:
     if help:
         print("""\
-Usage: yas-qwin --reindex [INDEX-NAME]
+Usage: yas-qwin reindex [INDEX-NAME]
         
 - Reindex a table
 - If no index is specified, reindex all tables
@@ -468,7 +460,7 @@ elif command == COMMAND_CREATE_TABLE:
     # if --help was passed, print usage and exit
     if help:
         print(f"""\
-Usage: yas-qwin --{command} [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]
+Usage: yas-qwin {command} [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]
 Options:
   -t, --temporary
   -i, --if-not-exists
@@ -538,7 +530,7 @@ elif command == COMMAND_COLUMN_DEFINITION:
     # if --help was passed, print command usage and exit
     if help:
         print(f"""\
-Usage: yas-qwin --{command} COLUMN_NAME TYPE [OPTIONS]
+Usage: yas-qwin {command} COLUMN_NAME TYPE [OPTIONS]
 Options:
   -p, --primary-key [CONFLICT-CLAUSE]
   -a, --autoincrement
@@ -604,9 +596,9 @@ Options:
 
         # Conflict clauses are a sqlite only feature, so we process them here.
         # Convert the clause keys to the sqlite equivalent
-        primary_key_clause = conflict_value_to_sql(primary_key_clause)
-        not_null_clause = conflict_value_to_sql(not_null_clause)
-        unique_clause = conflict_value_to_sql(unique_clause)
+        primary_key_clause = conflict_value_to_sql(primary_key_clause, with_prefix=True)
+        not_null_clause = conflict_value_to_sql(not_null_clause, with_prefix=True)
+        unique_clause = conflict_value_to_sql(unique_clause, with_prefix=True)
 
     sql = f"{column_name} {column_type} "
     if is_primary_key:
@@ -641,7 +633,7 @@ elif command == COMMAND_FOREIGN_KEY:
     # if --help was passed, print command usage and exit
     if help:
         print(f"""\
-Usage: yas-qwin --foreign-key-clause FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]
+Usage: yas-qwin foreign-key-clause FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]
 Options:
   -e, --on-delete VALUE
   -u, --on-update VALUE
@@ -706,7 +698,7 @@ elif command == COMMAND_TABLE_CONSTRAINT:
     # if --help was passed, print command usage and exit
     if help:
         print(f"""\
-Usage: yas-qwin --table-constr [COLUMN_NAMES] [OPTIONS]
+Usage: yas-qwin table-constr [COLUMN_NAMES] [OPTIONS]
 Options:
   -p, --primary-key [CONFLICT_CLAUSE]
   -u, --unique [CONFLICT_CLAUSE]
@@ -750,8 +742,8 @@ Note: COLUMN_NAMES are needed for PRIMARY KEY, UNIQUE, or
     if DATABASE_TYPE == "sqlite":
         # Conflict clauses are a sqlite only feature, so we process them here.
         # Convert the clause keys to the sqlite equivalent
-        primary_key_clause = conflict_value_to_sql(primary_key_clause)
-        unique_clause = conflict_value_to_sql(unique_clause)
+        primary_key_clause = conflict_value_to_sql(primary_key_clause, with_prefix=True)
+        unique_clause = conflict_value_to_sql(unique_clause, with_prefix=True)
 
     # build sql
     if is_primary_key:
@@ -769,7 +761,7 @@ Note: COLUMN_NAMES are needed for PRIMARY KEY, UNIQUE, or
 elif command == COMMAND_RETURNING_CLAUSE:
     if help:
         print(f"""\
-Usage: yas-qwin --returning [COLUMN_NAMES]
+Usage: yas-qwin returning [COLUMN_NAMES]
         
   - Return the modified rows back to the application.
   - If COLUMN_NAMES is not specified, '*' is set and
@@ -786,7 +778,7 @@ Usage: yas-qwin --returning [COLUMN_NAMES]
 elif command == COMMAND_WITH_CLAUSE:
     if help:
         print(f"""\
-Usage: yas-qwin --with-clause CTE_DEFS [OPTIONS]
+Usage: yas-qwin with-clause CTE_DEFS [OPTIONS]
         
   - WITH_CLAUSE is a comma separated list of common table
     expressions (CTEs).
@@ -817,7 +809,7 @@ Options:
 elif command == COMMAND_CTE_DEF:
     if help:
         print(f"""\
-Usage: yas-qwin --cte-def CTE_NAME SELECT-CLAUSE [OPTIONS]
+Usage: yas-qwin cte-def CTE_NAME SELECT-CLAUSE [OPTIONS]
         
   - CTE_NAME is the name of the common table expression.
   - To be used in a WITH clause.
@@ -848,7 +840,7 @@ Options:
 elif command == COMMAND_INSERT:
     if help:
         print(f"""\
-Usage: yas-qwin --insert TABLE_NAME [COLUMN_NAMES] [VALUES] [OPTIONS]
+Usage: yas-qwin insert TABLE_NAME [COLUMN_NAMES] [VALUES] [OPTIONS]
 
   - Insert rows into a table.
   - Only one of VALUES, SELECT_CLAUSE and --default may be specified.
@@ -889,7 +881,7 @@ Options:
     if DATABASE_TYPE == "sqlite":
         # Conflict clauses are a sqlite only feature, so we process them here.
         # Convert the clause keys to the sqlite equivalent
-        on_conflict = conflict_value_to_sql(on_conflict)
+        on_conflict = conflict_value_to_sql(on_conflict[0]) if on_conflict else None
 
     if len(positionals) == 2:
         table_name, column_names = positionals
@@ -903,7 +895,7 @@ Options:
 
     sql = "";
     if with_clause:
-        sql += f"WITH {with_clause} "
+        sql += f"WITH {with_clause[0]} "
     sql += f"INSERT "
     if on_conflict:
         sql += f"OR {on_conflict} "
@@ -914,21 +906,21 @@ Options:
     if default:
         sql += f"DEFAULT VALUES "
     elif as_select:
-        sql += f"AS {as_select} "
+        sql += f"AS {as_select[0]} "
     else:
         sql += f"VALUES {values} "
 
     if upsert:
-        sql += f"{upsert} "
+        sql += f"{upsert[0]} "
     if returning:
-        sql += f"{returning} "
+        sql += f"{returning[0]} "
 
     sql = sql.strip()
     sql += ";"
 elif command == COMMAND_UPDATE:
     if help:
         print(f"""\
-Usage: yas-qwin --update TABLE_NAME UDATE_EXPR
+Usage: yas-qwin update TABLE_NAME UDATE_EXPR
 
   - Update rows in a table.   
   - UPDATE_EXPR can have the forms:
@@ -966,7 +958,7 @@ Options:
     if DATABASE_TYPE == "sqlite":
         # Conflict clauses are a sqlite only feature, so we process them here.
         # Convert the clause keys to the sqlite equivalent
-        on_conflict = conflict_value_to_sql(on_conflict)
+        on_conflict = conflict_value_to_sql(on_conflict[0]) if on_conflict else None
 
     if len(positionals) == 2:
         table_name, update_expr = positionals
@@ -976,18 +968,18 @@ Options:
 
     sql = "-- Update rows in a table\n"
     if with_clause:
-        sql += f"WITH {with_clause} "
+        sql += f"WITH {with_clause[0]} "
     sql += f"UPDATE "
     if on_conflict:
         sql += f"OR {on_conflict} "
     sql += f"{table_name} "
     sql += f"SET {update_expr} "
     if from_clause:
-        sql += f"FROM {from_clause} "
+        sql += f"FROM {from_clause[0]} "
     if where:
-        sql += f"WHERE {where} "
+        sql += f"WHERE {where[0]} "
     if returning:
-        sql += f"{returning} "
+        sql += f"{returning[0]} "
 
     sql = sql.strip()
     sql += ";"

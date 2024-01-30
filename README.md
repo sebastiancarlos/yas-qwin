@@ -58,11 +58,7 @@ Optionally add to your `PATH`. (This can be done by running `make install`)
 ## Usage
 
 ```bash
-Usage: yas-qwin [OPTIONS] [COMMAND OPTIONS AND ARGS]
-    
-Two ways of passing commands are supported:
-  1. Using -c/--command COMMAND 
-  2. Using --COMMAND
+Usage: yas-qwin [OPTIONS] COMMAND [COMMAND OPTIONS AND ARGS]
     
 Commands:
   list-tables	reindex
@@ -105,7 +101,7 @@ YAS-QWIN's commands shall lead the faithful:
 ### `list-tables`
 
 ```bash
-Usage: yas-qwin --list-tables
+Usage: yas-qwin list-tables
 
 - List names of all tables in database
 - Note: SQLite only
@@ -122,7 +118,7 @@ SELECT name FROM sqlite_schema WHERE type='table';
 ### `list-indexes`
 
 ```bash
-Usage: yas-qwin --list-indexes
+Usage: yas-qwin list-indexes
             
 - List names of all indexes in database
 - Note: SQLite only
@@ -139,7 +135,7 @@ SELECT name FROM sqlite_schema WHERE type='index';
 ### `print-schemas`
 
 ```bash
-Usage: yas-qwin --print-schemas
+Usage: yas-qwin print-schemas
             
 - Print schema of all tables and indexes in database
 - Note: SQLite only
@@ -156,7 +152,7 @@ SELECT sql FROM sqlite_schema;
 ### `print-table`
 
 ```bash
-Usage: yas-qwin --print-table [TABLES]
+Usage: yas-qwin print-table [TABLES]
         
 - Print contents of tables
 - Note: If no TABLES passed and an SQLite database is in range,
@@ -174,7 +170,7 @@ SELECT * FROM sample-table;
 ### `rename-table`
 
 ```bash
-Usage: yas-qwin --rename-table TABLE NEW_NAME
+Usage: yas-qwin rename-table TABLE NEW_NAME
         
 - Rename a table
 
@@ -190,7 +186,7 @@ ALTER TABLE old_table RENAME TO new_table;
 ### `rename-column`
 
 ```bash
-Usage: yas-qwin --rename-column TABLE COLUMN NEW_NAME
+Usage: yas-qwin rename-column TABLE COLUMN NEW_NAME
         
 - Rename a column
 
@@ -206,7 +202,7 @@ ALTER TABLE sample_table RENAME COLUMN old_column TO new_column;
 ### `add-column`
 
 ```bash
-Usage: yas-qwin --add-column TABLE COLUMN_DEF
+Usage: yas-qwin add-column TABLE COLUMN_DEF
         
 - Add a column
 
@@ -222,7 +218,7 @@ ALTER TABLE sample_table ADD COLUMN column_def;
 ### `drop-column`
 
 ```bash
-Usage: yas-qwin --drop-column TABLE COLUMN
+Usage: yas-qwin drop-column TABLE COLUMN
         
 - Drop a column
 
@@ -238,7 +234,7 @@ ALTER TABLE sample_table DROP COLUMN sample_column;
 ### `create-index`
 
 ```bash
-Usage: yas-qwin --create-index [INDEX-NAME] [TABLE] [INDEXED-COLUMNS] [OPTIONS]
+Usage: yas-qwin create-index [INDEX-NAME] [TABLE] [INDEXED-COLUMNS] [OPTIONS]
         
 - Create an index on a column
 - INDEXED-COLUMNS is a comma-separated list of columns
@@ -260,7 +256,7 @@ CREATE INDEX sample_index ON sample_table (sample_column);
 ### `drop-index`
 
 ```bash
-Usage: yas-qwin --drop-index [INDEX-NAME] [OPTIONS]
+Usage: yas-qwin drop-index [INDEX-NAME] [OPTIONS]
         
 - Drop an index
         
@@ -279,7 +275,7 @@ DROP INDEX sample_index;
 ### `reindex`
 
 ```bash
-Usage: yas-qwin --reindex [INDEX-NAME]
+Usage: yas-qwin reindex [INDEX-NAME]
         
 - Reindex a table
 - If no index is specified, reindex all tables
@@ -296,7 +292,7 @@ REINDEX;
 ### `create-table`
 
 ```bash
-Usage: yas-qwin --create-table [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]
+Usage: yas-qwin create-table [OPTIONS] TABLE_NAME COLUMN_DEFINITIONS [TABLE_CONSTRAINTS]
 Options:
   -t, --temporary
   -i, --if-not-exists
@@ -317,7 +313,7 @@ CREATE TABLE sample_table (sample_column_defs, sample_table_constraints) STRICT;
 ### `column-def`
 
 ```bash
-Usage: yas-qwin --column-def COLUMN_NAME TYPE [OPTIONS]
+Usage: yas-qwin column-def COLUMN_NAME TYPE [OPTIONS]
 Options:
   -p, --primary-key [CONFLICT-CLAUSE]
   -a, --autoincrement
@@ -348,7 +344,7 @@ sample_column sample_type
 ### `table-constr`
 
 ```bash
-Usage: yas-qwin --table-constr [COLUMN_NAMES] [OPTIONS]
+Usage: yas-qwin table-constr [COLUMN_NAMES] [OPTIONS]
 Options:
   -p, --primary-key [CONFLICT_CLAUSE]
   -u, --unique [CONFLICT_CLAUSE]
@@ -376,7 +372,7 @@ CONFLICT_CLAUSE can be one of:
 ### `foreign-key-clause`
 
 ```bash
-Usage: yas-qwin --foreign-key-clause FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]
+Usage: yas-qwin foreign-key-clause FOREIGN_TABLE_NAME [FOREIGN_COLUMN_NAMES]
 Options:
   -e, --on-delete VALUE
   -u, --on-update VALUE
@@ -399,7 +395,7 @@ REFERENCES foreign_table_name (foreign_column_names)
 ### `returning-clause`
 
 ```bash
-Usage: yas-qwin --returning [COLUMN_NAMES]
+Usage: yas-qwin returning [COLUMN_NAMES]
         
   - Return the modified rows back to the application.
   - If COLUMN_NAMES is not specified, '*' is set and
@@ -416,7 +412,7 @@ RETURNING *
 ### `with-clause`
 
 ```bash
-Usage: yas-qwin --with-clause CTE_DEFS [OPTIONS]
+Usage: yas-qwin with-clause CTE_DEFS [OPTIONS]
         
   - WITH_CLAUSE is a comma separated list of common table
     expressions (CTEs).
@@ -435,7 +431,7 @@ WITH cte_defs
 ### `cte-def`
 
 ```bash
-Usage: yas-qwin --cte-def CTE_NAME SELECT-CLAUSE [OPTIONS]
+Usage: yas-qwin cte-def CTE_NAME SELECT-CLAUSE [OPTIONS]
         
   - CTE_NAME is the name of the common table expression.
   - To be used in a WITH clause.
@@ -453,7 +449,7 @@ cte_name AS (select_clause)
 ### `insert`
 
 ```bash
-Usage: yas-qwin --insert TABLE_NAME [COLUMN_NAMES] [VALUES] [OPTIONS]
+Usage: yas-qwin insert TABLE_NAME [COLUMN_NAMES] [VALUES] [OPTIONS]
 
   - Insert rows into a table.
   - Only one of VALUES, SELECT_CLAUSE and --default may be specified.
@@ -486,7 +482,7 @@ INSERT INTO table_name column_names VALUES sample_values;
 ### `update`
 
 ```bash
-Usage: yas-qwin --update TABLE_NAME UDATE_EXPR
+Usage: yas-qwin update TABLE_NAME UDATE_EXPR
 
   - Update rows in a table.   
   - UPDATE_EXPR can have the forms:

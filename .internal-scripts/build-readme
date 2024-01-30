@@ -43,8 +43,8 @@ for command in commands:
     commands_help.append(
         template.format(
             command=command,
-            usage=get_output(["yas-qwin", f"--{command}", "--help"]),
-            default_output=get_output(["yas-qwin", f"--{command}"]) or "<empty>"
+            usage=get_output(["yas-qwin", f"{command}", "--help"]),
+            default_output=get_output(["yas-qwin", f"{command}"]) or "<empty>"
         )
     )
 inserts['commands_help'] = "\n".join(commands_help)
