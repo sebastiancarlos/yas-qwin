@@ -33,6 +33,7 @@ COMMAND_RETURNING_CLAUSE = "returning-clause"
 COMMAND_WITH_CLAUSE = "with-clause"
 COMMAND_CTE_DEF = "cte-def"
 COMMAND_INSERT = "insert"
+COMMAND_UPDATE = "update"
 COMMANDS = [
     COMMAND_LIST_TABLES,
     COMMAND_LIST_INDEXES,
@@ -53,6 +54,7 @@ COMMANDS = [
     COMMAND_WITH_CLAUSE,
     COMMAND_CTE_DEF,
     COMMAND_INSERT,
+    COMMAND_UPDATE,
 ]
 
 COMMANDS_WITH_OUTPUT = [
@@ -922,6 +924,73 @@ Options:
         sql += f"{returning} "
 
     sql = sql.strip()
+    sql += ";"
+elif command == COMMAND_UPDATE:
+    if help:
+        print(f"""\
+Usage: yas-qwin --update TABLE_NAME UDATE_EXPR
+
+  - Update rows in a table.   
+  - UPDATE_EXPR can have the forms:
+    - column_name = value, ...
+    - (column_name, ...) = (value, ...), ...
+  
+Options:
+  - -w/--with WITH_CLAUSE
+  - -r/--returning RETURNING_CLAUSE
+  - -o/--on-conflict CONFLICT_CLAUSE
+  - -f/--from TABLES_OR_SUBQUERIES_OR_JOIN
+  - -w/--where EXPR
+""")
+        print_conflict_usage()
+        exit(0)
+
+    # pass the remaining positional arguments to a new parser
+    parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
+    parser.add_argument("-w", "--with-clause", nargs=1)
+    parser.add_argument("-r", "--returning", nargs=1)
+    parser.add_argument("-o", "--on-conflict", nargs=1)
+    parser.add_argument("-f", "--from", nargs=1, dest="from_clause")
+    parser.add_argument("-h", "--where", nargs=1)
+    parser.add_argument("positionals", nargs="*")
+
+    # parse arguments
+    args = parser.parse_args(positionals)
+    with_clause = args.with_clause
+    returning = args.returning
+    on_conflict = args.on_conflict
+    from_clause = args.from_clause
+    where = args.where
+    positionals = args.positionals
+        
+    if DATABASE_TYPE == "sqlite":
+        # Conflict clauses are a sqlite only feature, so we process them here.
+        # Convert the clause keys to the sqlite equivalent
+        on_conflict = conflict_value_to_sql(on_conflict)
+
+    if len(positionals) == 2:
+        table_name, update_expr = positionals
+    else:
+        table_name = "table_name"
+        update_expr = "update_expr"
+
+    sql = "-- Update rows in a table\n"
+    if with_clause:
+        sql += f"WITH {with_clause} "
+    sql += f"UPDATE "
+    if on_conflict:
+        sql += f"OR {on_conflict} "
+    sql += f"{table_name} "
+    sql += f"SET {update_expr} "
+    if from_clause:
+        sql += f"FROM {from_clause} "
+    if where:
+        sql += f"WHERE {where} "
+    if returning:
+        sql += f"{returning} "
+
+    sql = sql.strip()
+    sql += ";"
 
 ################
 # PRINT OR RUN #

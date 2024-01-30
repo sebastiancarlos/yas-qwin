@@ -108,9 +108,8 @@ YAS-QWIN comes with some quirks:
 - Not as database-engine diverse as could be yet.
 - Might toss an "AYY LMAO" or "Under construction" at you. It's a work in
   progress, but it's getting there.
-- Not all the SQL commands are supported. `SELECT`, `INSERT` and `UPDATE` are
-  actually quite hard to implement. They are the main villains of the YAS-QWIN
-  dev team, AYY LMAO.
+- Not all the SQL commands are supported. `SELECT` is a bit hard to implement.
+  It's the main villains of the YAS-QWIN dev team, AYY LMAO.
 - Inputs are not sanitized. Do not use with untrusted input.
 
 ## Disclaimer

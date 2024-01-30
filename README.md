@@ -65,16 +65,17 @@ Two ways of passing commands are supported:
   2. Using --COMMAND
     
 Commands:
-  list-tables	drop-index
-  list-indexes	reindex
-  print-schemas	create-table
-  print-table	column-def
-  rename-table	table-constr
-  rename-column	foreign-key-clause
-  add-column	returning-clause
-  drop-column	with-clause
-  create-index	cte-def
-  drop-index	insert
+  list-tables	reindex
+  list-indexes	create-table
+  print-schemas	column-def
+  print-table	table-constr
+  rename-table	foreign-key-clause
+  rename-column	returning-clause
+  add-column	with-clause
+  drop-column	cte-def
+  create-index	insert
+  drop-index	update
+  reindex
 
 Options:
   -l, --list-commands    One per line
@@ -479,7 +480,40 @@ CONFLICT_CLAUSE can be one of:
 #### Default output:
 
 ```sql
-INSERT INTO table_name column_names VALUES sample_values
+INSERT INTO table_name column_names VALUES sample_values;
+```
+
+### `update`
+
+```bash
+Usage: yas-qwin --update TABLE_NAME UDATE_EXPR
+
+  - Update rows in a table.   
+  - UPDATE_EXPR can have the forms:
+    - column_name = value, ...
+    - (column_name, ...) = (value, ...), ...
+  
+Options:
+  - -w/--with WITH_CLAUSE
+  - -r/--returning RETURNING_CLAUSE
+  - -o/--on-conflict CONFLICT_CLAUSE
+  - -f/--from TABLES_OR_SUBQUERIES_OR_JOIN
+  - -w/--where EXPR
+
+CONFLICT_CLAUSE can be one of:
+  rollback
+  abort
+  fail
+  ignore
+  replace
+
+```
+
+#### Default output:
+
+```sql
+-- Update rows in a table
+UPDATE table_name SET update_expr;
 ```
 
 ## Advanced Example
@@ -514,8 +548,8 @@ YAS-QWIN comes with some quirks:
 - Not as database-engine diverse as could be yet.
 - Might toss an "AYY LMAO" or "Under construction" at you. It's a work in
   progress, but it's getting there.
-- Not all the SQL commands are supported. `SELECT` and `UPDATE` are a bit hard
-  to implement. They are the main villains of the YAS-QWIN dev team, AYY LMAO.
+- Not all the SQL commands are supported. `SELECT` is a bit hard to implement.
+  It's the main villains of the YAS-QWIN dev team, AYY LMAO.
 - Inputs are not sanitized. Do not use with untrusted input.
 
 ## Disclaimer
