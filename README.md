@@ -74,7 +74,7 @@ Commands:
   add-column	returning-clause
   drop-column	with-clause
   create-index	cte-def
-  drop-index
+  drop-index	insert
 
 Options:
   -l, --list-commands    One per line
@@ -356,7 +356,6 @@ Options:
         
 Note: COLUMN_NAMES are needed for PRIMARY KEY, UNIQUE, or
       FOREIGN KEY constraints.
-        
 
 CONFLICT_CLAUSE can be one of:
   rollback
@@ -450,6 +449,39 @@ Options:
 cte_name AS (select_clause)
 ```
 
+### `insert`
+
+```bash
+Usage: yas-qwin --insert TABLE_NAME [COLUMN_NAMES] [VALUES] [OPTIONS]
+
+  - Insert rows into a table.
+  - Only one of VALUES, SELECT_CLAUSE and --default may be specified.
+  
+Options:
+  - -w/--with WITH_CLAUSE
+  - -r/--returning RETURNING_CLAUSE
+  - -o/--on-conflict CONFLICT_CLAUSE
+  - -u/--upsert UPSERT_CLAUSE
+  - -e/--default
+      - Just insert a row with default values.
+  - -a/--as-select SELECT_CLAUSE
+      - Insert values from a SELECT statement.
+
+CONFLICT_CLAUSE can be one of:
+  rollback
+  abort
+  fail
+  ignore
+  replace
+
+```
+
+#### Default output:
+
+```sql
+INSERT INTO table_name column_names VALUES sample_values
+```
+
 ## Advanced Example
 
 *"Roll up your sleeves Jesse, we need to cook!"*
@@ -482,9 +514,8 @@ YAS-QWIN comes with some quirks:
 - Not as database-engine diverse as could be yet.
 - Might toss an "AYY LMAO" or "Under construction" at you. It's a work in
   progress, but it's getting there.
-- Not all the SQL commands are supported. `SELECT`, `INSERT` and `UPDATE` are
-  actually quite hard to implement. They are the main villains of the YAS-QWIN
-  dev team, AYY LMAO.
+- Not all the SQL commands are supported. `SELECT` and `UPDATE` are a bit hard
+  to implement. They are the main villains of the YAS-QWIN dev team, AYY LMAO.
 - Inputs are not sanitized. Do not use with untrusted input.
 
 ## Disclaimer
