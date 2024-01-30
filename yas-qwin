@@ -754,7 +754,6 @@ elif command == COMMAND_RETURNING_CLAUSE:
     sql = f"RETURNING {column_names}"
 
 
-
 ################
 # PRINT OR RUN #
 ################

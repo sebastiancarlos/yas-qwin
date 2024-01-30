@@ -47,12 +47,10 @@ for command in commands:
         template.format(
             command=command,
             usage=get_output(["yas-qwin", f"--{command}", "--help"]),
-            default_output=get_output(["yas-qwin", f"--{command}"])
+            default_output=get_output(["yas-qwin", f"--{command}"]) or "<empty>"
         )
     )
 inserts['commands_help'] = "\n".join(commands_help)
-
-# print(inserts['commands_help'], end="")
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 template_path = os.path.join(script_dir, TEMPLATE_FILE)

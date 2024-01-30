@@ -367,7 +367,7 @@ CONFLICT_CLAUSE can be one of:
 #### Default output:
 
 ```sql
-
+<empty>
 ```
 
 ### `foreign-key-clause`
