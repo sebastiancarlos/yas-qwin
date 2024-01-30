@@ -33,9 +33,7 @@ SELECT * FROM your_table_name;
   SQL or refreshing your memory.
 
 **Alpha Disclaimer:** Currenty, YAS-QWIN has limited support for selection
-queries, and lacks data manipulation queries. Only DDL (creating and modifying
-the database schema) queries are fully supported. Check the bottom of the
-README for the full list of missing features.
+queries. Check the bottom of the README for the full list of missing features.
 
 ## Installation
 
