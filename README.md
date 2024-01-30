@@ -7,7 +7,7 @@
 #### Example:
 
 ```bash
-yas-qwin --print-table your_table_name
+yas-qwin print-table your_table_name
 ```
 
 #### Output: 
@@ -84,7 +84,7 @@ Options:
 
 Or run it in your database directly. 
 
-`yas-qwin -d your_database.db -c print-indexes --run`
+`yas-qwin -d your_database.db print-indexes --run`
 
 **Note:** You don't need to pass a database file if there's a single `*.db`
 file in your current directory.
@@ -519,11 +519,11 @@ UPDATE table_name SET update_expr;
 ```bash
 #! /usr/bin/env bash
 
-colId="$(yas-qwin --column-def id INTEGER --primary-key)";
-colName="$(yas-qwin --column-def name TEXT --not-null)";
-fk="$(yas-qwin --foreign-key-clause paper_sizes NAME --deferred --on-delete cascade --on-update cascade)";
-colPage="$(yas-qwin --column-def paper_size TEXT --foreign-key "${fk}")";
-yas-qwin --create-table document "$colId, $colName, $colPage";
+colId="$(yas-qwin column-def id INTEGER --primary-key)";
+colName="$(yas-qwin column-def name TEXT --not-null)";
+fk="$(yas-qwin foreign-key-clause paper_sizes NAME --deferred --on-delete cascade --on-update cascade)";
+colPage="$(yas-qwin column-def paper_size TEXT --foreign-key "${fk}")";
+yas-qwin create-table document "$colId, $colName, $colPage";
 ```
 
 Output:
