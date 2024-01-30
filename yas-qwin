@@ -893,7 +893,7 @@ Options:
         column_names = "column_names"
         values = "sample_values"
 
-    sql = "";
+    sql = "-- Insert rows into a table.\n"
     if with_clause:
         sql += f"WITH {with_clause[0]} "
     sql += f"INSERT "

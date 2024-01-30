@@ -474,6 +474,7 @@ CONFLICT_CLAUSE can be one of:
 #### Default output:
 
 ```sql
+-- Insert rows into a table.
 INSERT INTO table_name column_names VALUES sample_values;
 ```
 
