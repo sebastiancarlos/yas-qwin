@@ -30,6 +30,8 @@ COMMAND_COLUMN_DEFINITION = "column-def"
 COMMAND_TABLE_CONSTRAINT = "table-constr"
 COMMAND_FOREIGN_KEY = "foreign-key-clause"
 COMMAND_RETURNING_CLAUSE = "returning-clause"
+COMMAND_WITH_CLAUSE = "with-clause"
+COMMAND_CTE_DEF = "cte-def"
 COMMANDS = [
     COMMAND_LIST_TABLES,
     COMMAND_LIST_INDEXES,
@@ -47,6 +49,8 @@ COMMANDS = [
     COMMAND_TABLE_CONSTRAINT,
     COMMAND_FOREIGN_KEY,
     COMMAND_RETURNING_CLAUSE,
+    COMMAND_WITH_CLAUSE,
+    COMMAND_CTE_DEF,
 ]
 
 COMMANDS_WITH_OUTPUT = [
@@ -61,6 +65,8 @@ NON_RUNNABLE_COMMANDS = [
     COMMAND_TABLE_CONSTRAINT,
     COMMAND_FOREIGN_KEY,
     COMMAND_RETURNING_CLAUSE,
+    COMMAND_WITH_CLAUSE,
+    COMMAND_CTE_DEF,
 ]
 
 ##############################
@@ -183,6 +189,23 @@ def fetch_table_names():
         tables = cursor.fetchall()
         tables = [table[0] for table in tables]
         return tables
+
+
+def conflict_value_to_sql(value):
+    CONFLICT_CLAUSE_VALUES = ["rollback", "abort", "fail", "ignore", "replace"]
+    if value in CONFLICT_CLAUSE_VALUES:
+        return f"ON CONFLICT {value.upper()}"
+    else:
+        return value
+
+
+def print_conflict_usage():
+    print("CONFLICT_CLAUSE can be one of:")
+    print("  rollback")
+    print("  abort")
+    print("  fail")
+    print("  ignore")
+    print("  replace")
 
 
 ################
@@ -508,6 +531,8 @@ elif command == COMMAND_COLUMN_DEFINITION:
         print("  -f, --foreign-key FOREIGN_KEY_CLAUSE")
         print("  -g, --generated-as VALUE")
         print("  -s, --stored")
+        print("")
+        print_conflict_usage()
         exit(0)
 
     # pass the remaining positional arguments to a new parser
@@ -558,13 +583,12 @@ elif command == COMMAND_COLUMN_DEFINITION:
             # database's unfortunate incompatibility with the SQL standard)
             is_not_null = True
 
+
         # Conflict clauses are a sqlite only feature, so we process them here.
         # Convert the clause keys to the sqlite equivalent
-        CONFLICT_CLAUSE_VALUES = ["rollback", "abort", "fail", "ignore", "replace"]
-        for clause_key in ["primary_key_clause", "not_null_clause", "unique_clause"]:
-            if locals()[clause_key] in CONFLICT_CLAUSE_VALUES:
-                upper = locals()[clause_key].upper()
-                locals()[clause_key] = f"ON CONFLICT {upper}"
+        primary_key_clause = conflict_value_to_sql(primary_key_clause)
+        not_null_clause = conflict_value_to_sql(not_null_clause)
+        unique_clause = conflict_value_to_sql(unique_clause)
 
     sql = f"{column_name} {column_type} "
     if is_primary_key:
@@ -676,12 +700,7 @@ elif command == COMMAND_TABLE_CONSTRAINT:
         print("Note: COLUMN_NAMES are needed for PRIMARY KEY, UNIQUE, or")
         print("      FOREIGN KEY constraints.")
         print("")
-        print("CONFLICT_CLAUSE can be one of:")
-        print("  rollback")
-        print("  abort")
-        print("  fail")
-        print("  ignore")
-        print("  replace")
+        print_conflict_usage()
         exit(0)
 
     # pass the remaining positional arguments to a new parser
@@ -718,11 +737,8 @@ elif command == COMMAND_TABLE_CONSTRAINT:
     if DATABASE_TYPE == "sqlite":
         # Conflict clauses are a sqlite only feature, so we process them here.
         # Convert the clause keys to the sqlite equivalent
-        CONFLICT_CLAUSE_VALUES = ["rollback", "abort", "fail", "ignore", "replace"]
-        for clause_key in ["primary_key_clause", "unique_clause"]:
-            if locals()[clause_key] in CONFLICT_CLAUSE_VALUES:
-                upper = locals()[clause_key].upper()
-                locals()[clause_key] = f"ON CONFLICT {upper}"
+        primary_key_clause = conflict_value_to_sql(primary_key_clause)
+        unique_clause = conflict_value_to_sql(unique_clause)
 
     # build sql
     if is_primary_key:
@@ -752,7 +768,68 @@ elif command == COMMAND_RETURNING_CLAUSE:
         column_names = "*"
     
     sql = f"RETURNING {column_names}"
+elif command == COMMAND_WITH_CLAUSE:
+    if help:
+        print(f"Usage: yas-qwin --with-clause CTE_DEFS [OPTIONS]")
+        print("")
+        print("  - WITH_CLAUSE is a comma separated list of common table")
+        print("    expressions (CTEs).")
+        print("")
+        print("Options:")
+        print("  -r, --recursive    Needed if at least one CTE is recursive.")
+        exit(0)
 
+    # pass the remaining positional arguments to a new parser
+    # to extract flags
+    parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
+    parser.add_argument("-r", "--recursive", action="store_true")
+    parser.add_argument("positionals", nargs="*")
+    
+    # parse arguments
+    args = parser.parse_args(positionals)
+
+    # unpack options
+    recursive = args.recursive
+
+    if len(positionals) == 1:
+        with_clause = positionals[0]
+    else:
+        with_clause = "cte_defs"
+
+    sql = f"WITH "
+    if recursive:
+        sql += "RECURSIVE "
+    sql += f"{with_clause}"
+elif command == COMMAND_CTE_DEF:
+    if help:
+        print(f"Usage: yas-qwin --cte-def CTE_NAME SELECT-CLAUSE [OPTIONS]")
+        print("")
+        print("Options:")
+        print("  -m, --materialized")
+        exit(0)
+
+    # pass the remaining positional arguments to a new parser
+    # to extract flags
+    parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
+    parser.add_argument("-m", "--materialized", action="store_true")
+    parser.add_argument("positionals", nargs="*")
+
+    # parse arguments
+    args = parser.parse_args(positionals)
+
+    # unpack options
+    materialized = args.materialized
+
+    if len(positionals) == 2:
+        cte_name, select_clause = positionals
+    else:
+        cte_name = "cte_name"
+        select_clause = "select_clause"
+
+    sql = f"{cte_name} AS "
+    if materialized:
+        sql += "MATERIALIZED "
+    sql += f"({select_clause})"
 
 ################
 # PRINT OR RUN #

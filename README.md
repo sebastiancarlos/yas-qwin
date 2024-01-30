@@ -65,15 +65,16 @@ Two ways of passing commands are supported:
   2. Using --COMMAND
 
 Commands:
-  list-tables	create-index
-  list-indexes	drop-index
-  print-schemas	reindex
-  print-table	create-table
-  rename-table	column-def
-  rename-column	table-constr
-  add-column	foreign-key-clause
-  drop-column	returning-clause
-  create-index
+  list-tables	drop-index
+  list-indexes	reindex
+  print-schemas	create-table
+  print-table	column-def
+  rename-table	table-constr
+  rename-column	foreign-key-clause
+  add-column	returning-clause
+  drop-column	with-clause
+  create-index	cte-def
+  drop-index
 
 Options:
   -l, --list-commands    One per line
@@ -112,6 +113,8 @@ YAS-QWIN's commands shall lead the faithful:
 - `table-constr`
 - `foreign-key-clause`
 - `returning-clause`
+- `with-clause`
+- `cte-def`
 
 ## Help
 
@@ -335,6 +338,13 @@ Options:
   -f, --foreign-key FOREIGN_KEY_CLAUSE
   -g, --generated-as VALUE
   -s, --stored
+
+CONFLICT_CLAUSE can be one of:
+  rollback
+  abort
+  fail
+  ignore
+  replace
 ```
 
 #### Default output:
@@ -406,6 +416,39 @@ Usage: yas-qwin --returning [COLUMN_NAMES]
 
 ```sql
 RETURNING *
+```
+
+### `with-clause`
+
+```bash
+Usage: yas-qwin --with-clause CTE_DEFS [OPTIONS]
+
+  - WITH_CLAUSE is a comma separated list of common table
+    expressions (CTEs).
+
+Options:
+  -r, --recursive    Needed if at least one CTE is recursive.
+```
+
+#### Default output:
+
+```sql
+WITH cte_defs
+```
+
+### `cte-def`
+
+```bash
+Usage: yas-qwin --cte-def CTE_NAME SELECT-CLAUSE [OPTIONS]
+
+Options:
+  -m, --materialized
+```
+
+#### Default output:
+
+```sql
+cte_name AS (select_clause)
 ```
 
 ## Advanced Example
