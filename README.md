@@ -2,7 +2,7 @@
 
 # YAS-QWIN (Yet Another SQL-Query Writing Interface)
 
-**YAS-QWIN** is a **CLI** tool for building (and optionally running) **SQL** queries.
+**YAS-QWIN** (pronounced _Yas queen!_) is a **CLI** tool for building (and optionally running) **SQL** queries.
 
 #### Example:
 
