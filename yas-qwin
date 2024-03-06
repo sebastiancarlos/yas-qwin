@@ -704,6 +704,7 @@ Options:
   -u, --unique [CONFLICT_CLAUSE]
   -k, --check VALUE
   -f, --foreign-key FOREIGN_KEY_CLAUSE
+  -n, --constraint-name NAME
         
 Note: COLUMN_NAMES are needed for PRIMARY KEY, UNIQUE, or
       FOREIGN KEY constraints.
@@ -717,6 +718,7 @@ Note: COLUMN_NAMES are needed for PRIMARY KEY, UNIQUE, or
     parser.add_argument("-u", "--unique", nargs="?", const=True, default=False)
     parser.add_argument("-k", "--check", nargs=1)
     parser.add_argument("-f", "--foreign-key", nargs=1)
+    parser.add_argument("-n", "--constraint-name", nargs=1)
     parser.add_argument("positionals", nargs="*")
 
     # parse arguments
@@ -727,6 +729,7 @@ Note: COLUMN_NAMES are needed for PRIMARY KEY, UNIQUE, or
     unique_clause = args.unique if isinstance(args.unique, str) else None
     check = args.check
     foreign_key = args.foreign_key
+    constraint_name = args.constraint_name
     if len(args.positionals) == 1:
         column_names = args.positionals[0]
     else:
@@ -746,18 +749,22 @@ Note: COLUMN_NAMES are needed for PRIMARY KEY, UNIQUE, or
         unique_clause = conflict_value_to_sql(unique_clause, with_prefix=True)
 
     # build sql
+    sql = ""
+    if constraint_name:
+        sql = f"CONSTRAINT {constraint_name[0]} "
+
     if is_primary_key:
-        sql = f"PRIMARY KEY ({column_names}) "
+        sql += f"PRIMARY KEY ({column_names}) "
         if primary_key_clause:
             sql += f"{primary_key_clause}"
     elif is_unique:
-        sql = f"UNIQUE ({column_names}) "
+        sql += f"UNIQUE ({column_names}) "
         if unique_clause:
             sql += f"{unique_clause}"
     elif check:
-        sql = f"CHECK ({check[0]})"
+        sql += f"CHECK ({check[0]})"
     elif foreign_key:
-        sql = f"FOREIGN KEY ({column_names}) {foreign_key[0]}"
+        sql += f"FOREIGN KEY ({column_names}) {foreign_key[0]}"
 elif command == COMMAND_RETURNING_CLAUSE:
     if help:
         print(f"""\
@@ -1008,9 +1015,10 @@ if run:
         pipe = f'echo "{sql}" | {db_cli} {database}'
 
         # if command expects output, pipe it to less
-        if command in COMMANDS_WITH_OUTPUT:
-            less = "less --chop-long-lines --status-column --rscroll='>'"
-            pipe += f" | {less}"
+        # TODO: Consider enabling it only if larger than screen
+        # if command in COMMANDS_WITH_OUTPUT:
+        #     less = "less --chop-long-lines --status-column --rscroll='>'"
+        #     pipe += f" | {less}"
 
         import subprocess
 
